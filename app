@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ma Classe 6ème — Vie de classe</title>
+<meta name="theme-color" content="#4f46e5">
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#6b7280;--line:#e5e7eb;
+  --primary:#4f46e5;--primary2:#6366f1;--success:#16a34a;--warning:#d97706;
+  --danger:#dc2626;--shadow:0 8px 25px rgba(15,23,42,.07);--radius:18px;
+}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}.sidebar{width:250px;background:#111827;color:#fff;padding:20px 14px;position:fixed;inset:0 auto 0 0;overflow:auto;z-index:20}
+.brand{display:flex;gap:10px;align-items:center;padding:8px 10px 20px;font-weight:800;font-size:20px}.brand-icon{background:#6366f1;border-radius:12px;padding:8px}
+.nav-title{font-size:11px;text-transform:uppercase;color:#9ca3af;margin:18px 10px 7px}.nav button{display:flex;width:100%;gap:11px;align-items:center;color:#d1d5db;background:transparent;padding:11px 12px;border-radius:11px;text-align:left;margin:2px 0}.nav button:hover,.nav button.active{background:#273449;color:#fff}.main{margin-left:250px;width:calc(100% - 250px);padding:24px;max-width:1500px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.mobile-menu{display:none}.profile{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#e0e7ff;color:#3730a3;font-weight:800}
+.page{display:none}.page.active{display:block}.hero{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:24px;padding:28px;box-shadow:var(--shadow);margin-bottom:20px}.hero h1{margin:0 0 7px;font-size:28px}.hero p{margin:0;opacity:.9}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}.stat .num{font-size:27px;font-weight:800;margin:7px 0}.muted{color:var(--muted)}.section-title{display:flex;justify-content:space-between;align-items:center;margin:25px 0 12px}.section-title h2{font-size:19px;margin:0}.btn{padding:10px 14px;border-radius:11px;background:#eef2ff;color:#3730a3;font-weight:700}.btn.primary{background:var(--primary);color:#fff}.btn.success{background:#dcfce7;color:#166534}.btn.warning{background:#fef3c7;color:#92400e}.btn.danger{background:#fee2e2;color:#991b1b}.btn.small{padding:7px 10px;font-size:13px}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700}
+.progress{height:9px;background:#e5e7eb;border-radius:99px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--primary);border-radius:99px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.list{display:flex;flex-direction:column;gap:10px}.item{padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff}.iconbox{font-size:28px}.coin{color:#b45309;font-weight:800}.rank{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--line)}.rank:last-child{border-bottom:0}.rankpos{font-size:20px;font-weight:800}.book{display:flex;gap:14px}.cover{width:70px;height:95px;border-radius:9px;background:linear-gradient(145deg,#fde68a,#fb923c);display:grid;place-items:center;font-size:28px;flex:none}.stars{color:#f59e0b}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.day{min-height:100px;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff}.day strong{font-size:12px}.lesson{font-size:12px;background:#eef2ff;color:#3730a3;padding:5px;border-radius:7px;margin-top:7px}.chat{height:500px;display:flex;flex-direction:column}.messages{flex:1;overflow:auto;padding:10px}.msg{max-width:72%;padding:10px 13px;border-radius:14px;background:#f1f5f9;margin:8px 0}.msg.me{margin-left:auto;background:#e0e7ff}.chat-input{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}.chat-input input{flex:1}.input,textarea,select{width:100%;border:1px solid #d1d5db;border-radius:10px;padding:10px;background:#fff}.form{display:grid;gap:11px}.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;place-items:center;z-index:50;padding:20px}.modal.show{display:grid}.modal-box{background:#fff;border-radius:20px;width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{background:#f3f4f6;border-radius:10px;padding:8px}.toolbar{display:flex;gap:7px;flex-wrap:wrap;border:1px solid var(--line);padding:8px;border-radius:10px;background:#f8fafc}.editor{min-height:180px;border:1px solid #d1d5db;border-radius:10px;padding:13px}.quiz-option{display:flex;gap:8px;align-items:center;border:1px solid var(--line);padding:11px;border-radius:10px;margin:7px 0}.toast{position:fixed;right:20px;bottom:20px;background:#111827;color:#fff;padding:13px 17px;border-radius:12px;display:none;z-index:100}.toast.show{display:block}.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:14px}.tabs button{background:#e5e7eb;padding:9px 13px;border-radius:10px;white-space:nowrap}.tabs button.active{background:var(--primary);color:white}.hidden{display:none!important}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}.topbar{margin-bottom:14px}.grid,.grid-2,.grid-3{grid-template-columns:1fr}.calendar{grid-template-columns:1fr 1fr}.hero{padding:20px}.hero h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><span class="brand-icon">🏫</span> Ma Classe 6ème</div>
+  <div class="nav-title">Élève</div>
+  <nav class="nav">
+    <button class="active" data-page="home">🏠 Accueil</button>
+    <button data-page="schedule">📅 Emploi du temps</button>
+    <button data-page="discussions">💬 Discussions</button>
+    <button data-page="games">🎮 Jouer</button>
+    <button data-page="quizzes">🧠 Quiz</button>
+    <button data-page="library">📚 Bibliothèque</button>
+    <button data-page="activities">🌳 Activités</button>
+    <button data-page="groups">👥 Équipes & groupes</button>
+    <button data-page="challenges">🏆 Challenges</button>
+    <button data-page="coins">🪙 ClassCoins</button>
+    <button data-page="collab">🤝 Collaboration</button>
+    <button data-page="delegates">👥 Délégués</button>
+  </nav>
+  <div class="nav-title">Administration</div>
+  <nav class="nav">
+    <button data-page="teacher">👨‍🏫 Espace professeur</button>
+  </nav>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+  <div><strong id="pageTitle">Accueil</strong><div class="muted" id="roleLabel">6ème A • Élève</div></div>
+  <div class="profile"><div><strong id="userName">Adam</strong><div class="coin">🪙 <span id="coinBalance">850</span></div></div><div class="avatar">A</div></div>
+</header>
+
+<section class="page active" id="home">
+  <div class="hero"><h1>👋 Bonjour Adam !</h1><p>Bienvenue dans ton espace de vie de classe.</p></div>
+  <div class="grid">
+    <div class="card stat">🪙<div class="num" id="homeCoins">850</div><div class="muted">ClassCoins</div></div>
+    <div class="card stat">🏆<div class="num">#4</div><div class="muted">Classement</div></div>
+    <div class="card stat">📚<div class="num">12</div><div class="muted">Livres lus</div></div>
+    <div class="card stat">🔥<div class="num">5</div><div class="muted">Badges</div></div>
+  </div>
+  <div class="section-title"><h2>🎯 Challenge de la semaine</h2><button class="btn small" onclick="openChallenge()">Voir</button></div>
+  <div class="card"><div class="row"><div><strong>Jouons ensemble</strong><p class="muted">30 élèves participent à une activité réelle cette semaine.</p></div><strong>24 / 30</strong></div><div class="progress"><span style="width:80%"></span></div></div>
+  <div class="grid-2">
+    <div><div class="section-title"><h2>📅 Prochain événement</h2></div><div class="card"><strong>🎲 Jeux de société</strong><p>Samedi • 15:00 • Chez Sarah</p><div class="row"><span>6 / 8 participants</span><button class="btn primary small" onclick="joinActivity()">Je participe</button></div></div></div>
+    <div><div class="section-title"><h2>🏆 Top 5</h2></div><div class="card" id="top5"></div></div>
+  </div>
+</section>
+
+<section class="page" id="schedule"><div class="hero"><h1>📅 Emploi du temps</h1><p>La semaine de la classe 6ème A.</p></div><div class="card"><div class="calendar" id="calendar"></div></div></section>
+
+<section class="page" id="discussions"><div class="hero"><h1>💬 Discussions</h1><p>Échange avec ta classe et tes groupes.</p></div><div class="grid-2"><div class="card"><h3>Channels</h3><div class="list" id="channels"></div></div><div class="card chat"><div class="messages" id="messages"></div><div class="chat-input"><input id="messageInput" placeholder="Écrire un message..." onkeydown="if(event.key==='Enter')sendMessage()"><button class="btn primary" onclick="sendMessage()">➤</button></div></div></div></section>
+
+<section class="page" id="games"><div class="hero"><h1>🎮 Jouer ensemble</h1><p>Le multijoueur et la coopération sont au cœur de la classe.</p></div><div class="grid-3">
+  <div class="card"><div class="iconbox">⚔️</div><h3>Battle Maths</h3><p class="muted">2 à 8 joueurs • temps réel</p><button class="btn primary" onclick="startGame('Battle Maths')">Rejoindre</button></div>
+  <div class="card"><div class="iconbox">🧩</div><h3>Mission coopérative</h3><p class="muted">Travaillez en équipe.</p><button class="btn primary" onclick="startGame('Mission coopérative')">Rejoindre</button></div>
+  <div class="card"><div class="iconbox">🌍</div><h3>Battle Géographie</h3><p class="muted">2 à 20 joueurs</p><button class="btn primary" onclick="startGame('Battle Géographie')">Rejoindre</button></div>
+  <div class="card"><div class="iconbox">♟️</div><h3>Jeux de société</h3><p class="muted">Organiser une partie réelle.</p><button class="btn success" onclick="createActivity('Jeux de société')">Organiser</button></div>
+  <div class="card"><div class="iconbox">⚽</div><h3>Sport</h3><p class="muted">Trouver des camarades.</p><button class="btn success" onclick="createActivity('Sport')">Organiser</button></div>
+  <div class="card"><div class="iconbox">🏆</div><h3>Tournoi</h3><p class="muted">Créer un tournoi d'équipe.</p><button class="btn warning" onclick="openTournament()">Créer</button></div>
+</div></section>
+
+<section class="page" id="quizzes"><div class="hero"><h1>🧠 Quiz</h1><p>Quiz individuels, par équipes ou en battle.</p></div><div class="grid-3" id="quizList"></div></section>
+
+<section class="page" id="library"><div class="hero"><h1>📚 Bibliothèque</h1><p>Lire, découvrir, commenter et échanger des livres avec les camarades.</p></div><div class="tabs"><button class="active" onclick="filterBooks('all',this)">Tous</button><button onclick="filterBooks('read',this)">J'ai lu</button><button onclick="filterBooks('exchange',this)">À échanger</button><button onclick="filterBooks('toread',this)">À lire</button></div><div class="grid-2" id="bookList"></div></section>
+
+<section class="page" id="activities"><div class="hero"><h1>🌳 Activités de la semaine</h1><p>L'application organise, les activités se vivent dans la vraie vie.</p></div><div class="grid-2" id="activityList"></div></section>
+
+<section class="page" id="groups"><div class="hero"><h1>👥 Équipes & groupes</h1><p>Équipes stables pour les compétitions, groupes temporaires pour les activités.</p></div><div class="grid-2"><div class="card"><h3>🏆 Mes équipes</h3><div class="list" id="teamList"></div></div><div class="card"><h3>🤝 Mes groupes</h3><div class="list"><div class="item"><strong>🎲 Les joueurs de Uno</strong><div class="muted">8 membres • prochaine partie samedi</div></div><div class="item"><strong>📚 Les lecteurs</strong><div class="muted">7 membres • 31 livres lus</div></div><button class="btn primary" onclick="createGroup()">+ Créer un groupe</button></div></div></div></section>
+
+<section class="page" id="challenges"><div class="hero"><h1>🏆 Challenges</h1><p>Pas de pression quotidienne : des objectifs sur la semaine et le mois.</p></div><div class="grid-2"><div class="card"><h3>🎯 Challenge de la semaine</h3><h2>Jouons ensemble</h2><p>30 élèves participent à au moins une activité avec leurs camarades.</p><div class="progress"><span style="width:80%"></span></div><p><strong>24 / 30</strong></p><span class="chip">+100 🪙 pour tous</span></div><div class="card"><h3>🏆 Challenge du mois</h3><h2>Le mois de la lecture</h2><p>Objectif : 50 livres lus par la classe.</p><div class="progress"><span style="width:74%"></span></div><p><strong>37 / 50</strong></p><span class="chip">🎉 Récompense collective</span></div></div><div class="section-title"><h2>➕ Challenges proposés</h2><button class="btn primary" onclick="openChallenge()">Proposer</button></div></section>
+
+<section class="page" id="coins"><div class="hero"><h1>🪙 ClassCoins</h1><p>Une monnaie virtuelle pour valoriser la participation et débloquer des récompenses.</p></div><div class="grid"><div class="card stat">💰<div class="num" id="coinPageBalance">850</div><div class="muted">Solde</div></div><div class="card stat">📖<div class="num">+50</div><div class="muted">Lecture</div></div><div class="card stat">🤝<div class="num">+30</div><div class="muted">Entraide</div></div><div class="card stat">🌳<div class="num">+30</div><div class="muted">Activité réelle</div></div></div><div class="section-title"><h2>🛍️ Boutique</h2></div><div class="grid-3" id="shop"></div></section>
+
+<section class="page" id="collab"><div class="hero"><h1>🤝 Collaboration</h1><p>Projets, groupes et tâches à réaliser ensemble.</p></div><div class="grid-2"><div class="card"><h3>📚 Projet Planètes</h3><p class="muted">Groupe de 4 • échéance 20 septembre</p><div class="list"><div class="item">☑️ Rechercher les planètes</div><div class="item">☐ Préparer l'affiche</div><div class="item">☐ Répéter la présentation</div></div></div><div class="card"><h3>💡 Idées de la classe</h3><div class="list"><div class="item">🏸 Organiser du badminton <span class="chip">18 👍</span></div><div class="item">🎲 Après-midi jeux <span class="chip">24 👍</span></div></div></div></div></section>
+
+<section class="page" id="delegates"><div class="hero"><h1>👥 Espace délégués</h1><p>Chaque élève peut proposer une idée ou faire une demande.</p></div><div class="grid-2"><div class="card"><h3>📩 Mes demandes</h3><div class="list" id="requestList"></div><button class="btn primary" onclick="openRequest()">+ Nouvelle demande</button></div><div class="card"><h3>📊 Sondages</h3><div class="item"><strong>Quel jeu pour la prochaine activité ?</strong><p>🎲 Escape Game — 15</p><p>⚽ Football — 8</p><p>🎮 Quiz Battle — 12</p><button class="btn" onclick="toast('Vote enregistré !')">Voter</button></div></div></div></section>
+
+<section class="page" id="teacher"><div class="hero"><h1>👨‍🏫 Espace professeur</h1><p>Créer du contenu, gérer les ClassCoins, les équipes et les activités.</p></div><div class="grid-3">
+  <div class="card"><div class="iconbox">🪙</div><h3>Attribuer des ClassCoins</h3><p class="muted">À un élève, groupe, équipe ou toute la classe.</p><button class="btn primary" onclick="openCoinsModal()">Attribuer</button></div>
+  <div class="card"><div class="iconbox">🎯</div><h3>Créer un challenge</h3><button class="btn primary" onclick="openChallenge()">Créer</button></div>
+  <div class="card"><div class="iconbox">🧠</div><h3>Créer un quiz</h3><button class="btn primary" onclick="openQuizBuilder()">Créer</button></div>
+  <div class="card"><div class="iconbox">📄</div><h3>Ajouter un document</h3><button class="btn primary" onclick="openDocument()">Ajouter</button></div>
+  <div class="card"><div class="iconbox">🎮</div><h3>Créer un jeu</h3><button class="btn primary" onclick="openGameBuilder()">Créer</button></div>
+  <div class="card"><div class="iconbox">📝</div><h3>Créer une ressource</h3><button class="btn primary" onclick="openContentBuilder()">Éditer</button></div>
+</div><div class="section-title"><h2>📊 Vue classe</h2></div><div class="grid-3"><div class="card"><strong>28 / 30</strong><p class="muted">Élèves actifs cette semaine</p></div><div class="card"><strong>124</strong><p class="muted">Activités réalisées</p></div><div class="card"><strong>187</strong><p class="muted">Livres lus cette année</p></div></div></section>
+</main></div>
+
+<div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h2 id="modalTitle">Titre</h2><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================
+   CONFIGURATION FIREBASE
+   =========================
+   1. Crée un projet Firebase.
+   2. Active Authentication et Firestore.
+   3. Remplace firebaseConfig ci-dessous.
+   4. Les fonctions de démonstration fonctionnent sans Firebase.
+*/
+const firebaseConfig = {
+  apiKey: "VOTRE_API_KEY",
+  authDomain: "VOTRE_PROJET.firebaseapp.com",
+  projectId: "VOTRE_PROJET",
+  storageBucket: "VOTRE_PROJET.firebasestorage.app",
+  messagingSenderId: "VOTRE_SENDER_ID",
+  appId: "VOTRE_APP_ID"
+};
+
+/* Données de démonstration */
+let state={
+  coins:850, user:"Adam", currentChannel:"Annonces",
+  books:[
+    {id:1,title:"Le Petit Prince",author:"Antoine de Saint-Exupéry",rating:4.8,read:true,exchange:true,emoji:"📕",reviews:12},
+    {id:2,title:"Harry Potter à l'école des sorciers",author:"J. K. Rowling",rating:4.7,read:true,exchange:false,emoji:"🪄",reviews:14},
+    {id:3,title:"Matilda",author:"Roald Dahl",rating:4.6,read:false,exchange:false,emoji:"📗",reviews:8},
+    {id:4,title:"Astérix",author:"René Goscinny",rating:4.5,read:true,exchange:true,emoji:"🛡️",reviews:10}
+  ],
+  activities:[
+    {icon:"🎲",title:"Jeux de société",date:"Samedi • 15:00",place:"Chez Sarah",people:"6 / 8",joined:false},
+    {icon:"⚽",title:"Football",date:"Dimanche • 10:00",place:"Terrain municipal",people:"8 / 12",joined:false},
+    {icon:"🏸",title:"Badminton",date:"Samedi • 16:00",place:"Gymnase",people:"4 / 8",joined:false},
+    {icon:"📚",title:"Sortie bibliothèque",date:"Mercredi • 14:00",place:"Bibliothèque municipale",people:"3 / 8",joined:false}
+  ],
+  requests:["Organiser un tournoi de football","Ajouter des livres à la bibliothèque"],
+  teams:[
+    {name:"🔵 Team Newton",members:4,points:2850},
+    {name:"🟢 Team Curie",members:4,points:2760},
+    {name:"🟠 Team Pasteur",members:4,points:2510}
+  ]
+};
+
+const navNames={
+home:"Accueil",schedule:"Emploi du temps",discussions:"Discussions",games:"Jouer",
+quizzes:"Quiz",library:"Bibliothèque",activities:"Activités",groups:"Équipes & groupes",
+challenges:"Challenges",coins:"ClassCoins",collab:"Collaboration",delegates:"Délégués",teacher:"Espace professeur"
+};
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+  document.getElementById("pageTitle").textContent=navNames[id];
+  document.getElementById("sidebar").classList.remove("open");
+  if(id==="library")renderBooks();
+  if(id==="activities")renderActivities();
+}
+function toggleSidebar(){document.getElementById("sidebar").classList.toggle("open")}
+function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+function openModal(title,body){document.getElementById("modalTitle").textContent=title;document.getElementById("modalBody").innerHTML=body;document.getElementById("modal").classList.add("show")}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+
+function renderTop5(){
+ const names=[["🥇","Sarah",1020],["🥈","Yassine",960],["🥉","Lina",910],["4","Adam",850],["5","Nour",820]];
+ document.getElementById("top5").innerHTML=names.map(x=>`<div class="rank"><div class="rankpos">${x[0]}</div><div><strong>${x[1]}</strong></div><div class="coin">${x[2]} 🪙</div></div>`).join("");
+}
+function renderCalendar(){
+ const days=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"], lessons=[
+ ["Maths","Français"],["Histoire","Maths"],["Sciences","Anglais"],["Français","Sport"],["Maths","Sciences"],["🎲 Activité",""],["⚽ Sport",""]];
+ document.getElementById("calendar").innerHTML=days.map((d,i)=>`<div class="day"><strong>${d}</strong>${lessons[i].filter(Boolean).map(l=>`<div class="lesson">${l}</div>`).join("")}</div>`).join("");
+}
+function renderChannels(){
+ const ch=["📢 Annonces","📚 Devoirs","🧮 Maths","🇫🇷 Français","🔬 Sciences","🎮 Jeux","⚽ Sport","💡 Idées"];
+ document.getElementById("channels").innerHTML=ch.map(c=>`<button class="btn ${c==="📢 Annonces"?"primary":""}" style="text-align:left" onclick="selectChannel('${c}')">${c}</button>`).join("");
+ document.getElementById("messages").innerHTML=`<div class="msg"><strong>Sarah</strong><br>Quelqu'un vient aux jeux de société samedi ?</div><div class="msg me"><strong>Adam</strong><br>Oui, je participe ! 🎲</div><div class="msg"><strong>Yassine</strong><br>Moi aussi 👍</div>`;
+}
+function selectChannel(c){state.currentChannel=c;toast("Channel : "+c)}
+function sendMessage(){let i=document.getElementById("messageInput"),v=i.value.trim();if(!v)return;document.getElementById("messages").insertAdjacentHTML("beforeend",`<div class="msg me"><strong>Adam</strong><br>${escapeHtml(v)}</div>`);i.value="";document.getElementById("messages").scrollTop=99999}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+function renderBooks(filter="all"){
+ let arr=state.books.filter(b=>filter==="all"||(filter==="read"&&b.read)||(filter==="exchange"&&b.exchange)||(filter==="toread"&&!b.read));
+ document.getElementById("bookList").innerHTML=arr.map(b=>`<div class="card"><div class="book"><div class="cover">${b.emoji}</div><div style="flex:1"><h3>${b.title}</h3><div class="muted">${b.author}</div><div class="stars">★★★★★ <span class="muted">${b.rating}/5 • ${b.reviews} avis</span></div><div class="chips" style="margin:8px 0">${b.read?'<span class="chip">📖 Lu</span>':''}${b.exchange?'<span class="chip">🔄 À échanger</span>':''}</div><button class="btn small" onclick="bookDetails(${b.id})">Voir le livre</button></div></div></div>`).join("");
+}
+function filterBooks(f,el){document.querySelectorAll("#library .tabs button").forEach(x=>x.classList.remove("active"));el.classList.add("active");renderBooks(f)}
+function bookDetails(id){let b=state.books.find(x=>x.id===id);openModal("📚 "+b.title,`<div class="book"><div class="cover">${b.emoji}</div><div><h3>${b.author}</h3><div class="stars">★★★★★ ${b.rating}/5</div><p>👥 ${b.reviews} élèves ont donné leur avis.</p></div></div><hr><h3>💬 Avis des élèves</h3><div class="item"><strong>Sarah ⭐⭐⭐⭐⭐</strong><p>Une histoire que je recommande !</p></div><div class="item"><strong>Yassine ⭐⭐⭐⭐</strong><p>Très bon livre.</p></div><br><button class="btn primary" onclick="addReview()">Ajouter mon avis</button>${b.exchange?'<button class="btn success" style="margin-left:8px" onclick="toast(\\'Demande d’échange envoyée !\\')">Demander un échange</button>':''}`)}
+function addReview(){closeModal();openModal("Ajouter un avis",`<div class="form"><label>Note <select><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label><label>Commentaire<textarea placeholder="Ton avis sur le livre..."></textarea></label><button class="btn primary" onclick="closeModal();toast('Avis publié ! +10 🪙')">Publier</button></div>`)}
+
+function renderActivities(){
+ document.getElementById("activityList").innerHTML=state.activities.map((a,i)=>`<div class="card"><div class="row"><div><div class="iconbox">${a.icon}</div><h3>${a.title}</h3><p>${a.date}<br>📍 ${a.place}</p><span class="chip">👥 ${a.people}</span></div><button class="btn ${a.joined?"success":"primary"}" onclick="joinActivity(${i})">${a.joined?"✓ Je participe":"Je participe"}</button></div></div>`).join("");
+}
+function joinActivity(i=0){state.activities[i].joined=true;let p=state.activities[i].people.split("/");p[0]=+p[0]+1;state.activities[i].people=p.join(" / ");state.coins+=30;syncCoins();renderActivities();toast("Participation enregistrée ! +30 🪙")}
+function createActivity(type){openModal("🌳 Organiser une activité",`<div class="form"><label>Activité<input class="input" value="${type}"></label><label>Date<input type="date" class="input"></label><label>Heure<input type="time" class="input"></label><label>Lieu<input class="input" placeholder="Lieu de rendez-vous"></label><label>Nombre de participants<input type="number" class="input" value="8"></label><button class="btn primary" onclick="closeModal();toast('Activité créée ! Les camarades peuvent maintenant la rejoindre.')">Publier</button></div>`)}
+
+function renderTeams(){document.getElementById("teamList").innerHTML=state.teams.map(t=>`<div class="item"><div class="row"><strong>${t.name}</strong><span class="coin">${t.points} XP</span></div><div class="muted">${t.members} membres</div></div>`).join("")}
+function renderQuizzes(){
+ const q=[["🧮","Défi fractions","Mathématiques","10 questions","+100 🪙"],["🔬","Les états de la matière","Sciences","8 questions","+80 🪙"],["🌍","Capitales du monde","Géographie","12 questions","+120 🪙"],["🇫🇷","Conjugaison","Français","10 questions","+100 🪙"]];
+ document.getElementById("quizList").innerHTML=q.map(x=>`<div class="card"><div class="iconbox">${x[0]}</div><h3>${x[1]}</h3><p class="muted">${x[2]} • ${x[3]}</p><span class="chip">${x[4]}</span><br><br><button class="btn primary" onclick="launchQuiz('${x[1]}')">Jouer</button><button class="btn" onclick="startGame('${x[1]} Battle')">👥 Multijoueur</button></div>`).join("");
+}
+function launchQuiz(title){openModal("🧠 "+title,`<p>Question 1 / 5</p><h3>Quel résultat est correct ?</h3><div class="quiz-option">○ 12</div><div class="quiz-option">○ 18</div><div class="quiz-option">○ 24</div><div class="quiz-option">○ 36</div><button class="btn primary" onclick="closeModal();state.coins+=20;syncCoins();toast('Réponse enregistrée ! +20 🪙')">Valider</button>`)}
+function startGame(name){openModal("🎮 "+name,`<div class="card"><h3>Salon multijoueur</h3><p>👥 Joueurs connectés : 4</p><div class="list"><div class="item">🔵 Adam — prêt</div><div class="item">🟢 Sarah — prêt</div><div class="item">🟠 Yassine — prêt</div><div class="item">🟣 Lina — prêt</div></div><br><button class="btn primary" onclick="closeModal();toast('La partie commence !')">🚀 Lancer la partie</button></div>`)}
+
+function renderShop(){
+ const items=[["📕","Livre au choix",500],["🎨","Avatar spécial",200],["🏅","Badge légendaire",300],["🎟️","Choisir le prochain jeu",400],["🎲","Jeu de société",700],["📚","Bon bibliothèque",300]];
+ document.getElementById("shop").innerHTML=items.map(x=>`<div class="card"><div class="iconbox">${x[0]}</div><h3>${x[1]}</h3><p class="coin">${x[2]} 🪙</p><button class="btn primary" onclick="buyReward('${x[1]}',${x[2]})">Débloquer</button></div>`).join("");
+}
+function buyReward(name,cost){if(state.coins<cost){toast("Solde insuffisant.");return}state.coins-=cost;syncCoins();toast(name+" débloqué !");}
+
+function syncCoins(){["coinBalance","homeCoins","coinPageBalance"].forEach(id=>{let e=document.getElementById(id);if(e)e.textContent=state.coins})}
+function openCoinsModal(){openModal("🪙 Attribuer des ClassCoins",`<div class="form"><label>Destinataire<select class="input"><option>Adam</option><option>Sarah</option><option>Yassine</option><option>Équipe Newton</option><option>Groupe Les lecteurs</option><option>Toute la classe</option></select></label><label>Nombre<input class="input" type="number" value="50"></label><label>Motif<select class="input"><option>Participation</option><option>Entraide</option><option>Lecture</option><option>Projet</option><option>Challenge</option><option>Autre</option></select></label><button class="btn primary" onclick="closeModal();toast('ClassCoins attribués avec succès.')">Attribuer</button></div>`)}
+
+function openChallenge(){openModal("🎯 Créer un challenge",`<div class="form"><label>Titre<input class="input" placeholder="Challenge de la semaine"></label><label>Description<textarea placeholder="Objectif du challenge..."></textarea></label><div class="grid-2"><label>Du<input class="input" type="date"></label><label>Au<input class="input" type="date"></label></div><label>Type<select class="input"><option>Individuel</option><option>Équipe</option><option>Toute la classe</option></select></label><label>Objectif<input class="input" placeholder="30 participants"></label><label>Récompense<input class="input" value="100 ClassCoins"></label><button class="btn primary" onclick="closeModal();toast('Challenge enregistré !')">Publier</button></div>`)}
+function openRequest(){openModal("📩 Nouvelle demande",`<div class="form"><label>Catégorie<select class="input"><option>Vie de classe</option><option>Sortie</option><option>Jeux</option><option>Sport</option><option>Bibliothèque</option><option>Matériel</option><option>Idée</option></select></label><label>Demande<textarea placeholder="Décris ton idée ou ta demande..."></textarea></label><button class="btn primary" onclick="state.requests.push('Nouvelle demande');renderRequests();closeModal();toast('Demande envoyée aux délégués !')">Envoyer</button></div>`)}
+function renderRequests(){document.getElementById("requestList").innerHTML=state.requests.map((r,i)=>`<div class="item"><strong>${r}</strong><div class="muted">🟠 En discussion • ${i+5} 👍</div></div>`).join("")}
+function createGroup(){openModal("👥 Créer un groupe",`<div class="form"><label>Nom<input class="input" placeholder="Les joueurs de..."></label><label>Activité<select class="input"><option>Jeu de société</option><option>Sport</option><option>Projet</option><option>Lecture</option></select></label><label>Visibilité<select class="input"><option>Classe</option><option>Mes amis</option></select></label><button class="btn primary" onclick="closeModal();toast('Groupe créé !')">Créer</button></div>`)}
+function openTournament(){openModal("🏆 Créer un tournoi",`<div class="form"><label>Nom<input class="input" placeholder="Coupe des Maths"></label><label>Jeu<select class="input"><option>Battle Maths</option><option>Battle Géographie</option><option>Quiz</option></select></label><label>Nombre d'équipes<input class="input" type="number" value="4"></label><button class="btn primary" onclick="closeModal();toast('Tournoi créé !')">Créer</button></div>`)}
+function openDocument(){openModal("📄 Ajouter un document",`<div class="form"><label>Titre<input class="input" placeholder="Fiche de révision"></label><label>Matière<select class="input"><option>Mathématiques</option><option>Français</option><option>Sciences</option><option>Histoire</option></select></label><label>Description<textarea></textarea></label><label>Fichier<input class="input" type="file"></label><button class="btn primary" onclick="closeModal();toast('Document publié !')">Publier</button></div>`)}
+function openGameBuilder(){openModal("🎮 Créateur de jeu",`<div class="form"><label>Nom<input class="input" placeholder="Battle des capitales"></label><label>Modes<select class="input"><option>Multijoueur</option><option>Coopératif</option><option>Équipe</option></select></label><label>Nombre de joueurs<input class="input" type="number" value="8"></label><label>Questions<textarea placeholder="Ajoute tes questions..."></textarea></label><button class="btn primary" onclick="closeModal();toast('Jeu publié !')">Publier</button></div>`)}
+function openQuizBuilder(){openModal("🧠 Créateur de quiz",`<div class="form"><label>Titre<input class="input" placeholder="Mon quiz"></label><label>Matière<select class="input"><option>Mathématiques</option><option>Français</option><option>Sciences</option><option>Histoire</option><option>Géographie</option></select></label><label>Question 1<input class="input" placeholder="Écris la question"></label><div class="grid-2"><input class="input" placeholder="Réponse A"><input class="input" placeholder="Réponse B"><input class="input" placeholder="Réponse C"><input class="input" placeholder="Réponse D"></div><label>Bonne réponse<select class="input"><option>A</option><option>B</option><option>C</option><option>D</option></select></label><button class="btn" onclick="toast('Question ajoutée')">+ Ajouter une question</button><button class="btn primary" onclick="closeModal();toast('Quiz publié !')">Publier</button></div>`)}
+function openContentBuilder(){openModal("📝 Éditeur WYSIWYG",`<div class="form"><label>Titre<input class="input" placeholder="Titre de la ressource"></label><div class="toolbar"><button class="btn small" onclick="document.execCommand('bold')"><b>B</b></button><button class="btn small" onclick="document.execCommand('italic')"><i>I</i></button><button class="btn small" onclick="document.execCommand('insertUnorderedList')">• Liste</button><button class="btn small" onclick="document.execCommand('formatBlock',false,'h2')">H2</button></div><div class="editor" contenteditable="true">Commence à écrire ici...</div><label>Classe<select class="input"><option>6ème A</option></select></label><button class="btn primary" onclick="closeModal();toast('Ressource publiée !')">Publier</button></div>`)}
+
+renderTop5();renderCalendar();renderChannels();renderBooks();renderActivities();renderTeams();renderQuizzes();renderShop();renderRequests();syncCoins();
+
+/* =====================================================
+   FIREBASE : branchement optionnel
+   Les CDN sont chargés dynamiquement uniquement si
+   une vraie configuration est renseignée.
+   ===================================================== */
+async function initFirebase(){
+  if(firebaseConfig.apiKey.startsWith("VOTRE_")) return;
+  try{
+    const appMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+    const authMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+    const fsMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
+    const app=appMod.initializeApp(firebaseConfig);
+    const auth=authMod.getAuth(app);
+    const db=fsMod.getFirestore(app);
+    window.firebaseApp={app,auth,db,fsMod};
+    console.log("Firebase connecté.");
+  }catch(e){console.error("Firebase:",e);toast("Mode démo : Firebase non connecté.");}
+}
+initFirebase();
+</script>
+</body>
+</html>
