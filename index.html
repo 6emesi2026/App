@@ -51,9 +51,10 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
     </div>
     <div id="authError" class="auth-error"></div>
     <div id="authInfo" class="auth-info"></div>
+    <div id="firebaseStatus" style="font-size:12px;color:#6b7280;margin:-8px 0 14px;text-align:center">Connexion à Firebase…</div>
 
     <form id="loginForm" class="form" onsubmit="event.preventDefault();loginUser()">
-      <label>Login<input id="loginInput" class="input" autocomplete="username" required placeholder="ex. adam123"></label>
+      <label>Login<input id="loginInput" class="input" autocomplete="username" required placeholder="ex. admin123" inputmode="text" autocomplete="username"></label>
       <label>Mot de passe<input id="passwordInput" class="input" type="password" autocomplete="current-password" required></label>
       <button class="btn primary" type="submit">🔐 Se connecter</button>
     </form>
@@ -63,7 +64,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
         <label>Prénom<input id="regFirstName" class="input" required></label>
         <label>Nom<input id="regLastName" class="input" required></label>
       </div>
-      <label>Login<input id="regLogin" class="input" required pattern="[A-Za-z0-9._-]{3,30}" placeholder="ex. adam123"></label>
+      <label>Login<input id="regLogin" class="input" required pattern="[A-Za-z0-9._-]{3,30}" placeholder="ex. admin123" inputmode="text"></label>
       <label>Mot de passe<input id="regPassword" class="input" type="password" minlength="6" required></label>
       <label>Confirmer le mot de passe<input id="regPassword2" class="input" type="password" minlength="6" required></label>
       <label>Je suis :</label>
@@ -341,11 +342,69 @@ function openContentBuilder(){openModal("📝 Éditeur WYSIWYG",`<div class="for
 renderTop5();renderCalendar();renderChannels();renderBooks();renderActivities();renderTeams();renderQuizzes();renderShop();renderRequests();syncCoins();
 
 /* =====================================================
-   FIREBASE : AUTHENTIFICATION + FIRESTORE
+   FIREBASE V2 : AUTHENTIFICATION + FIRESTORE
+   Correction majeure : on ne lit plus Firestore avant
+   d'avoir authentifié l'utilisateur.
    ===================================================== */
 let fb = null;
 let currentUser = null;
 let currentProfile = null;
+let firebaseReady = false;
+
+function firebaseErrorMessage(e, context=""){
+  const code = e?.code || "unknown";
+  const raw = e?.message || String(e || "Erreur inconnue");
+  console.error("Firebase error", {context, code, message:raw, error:e});
+  const map = {
+    "auth/operation-not-allowed":"La connexion par e-mail/mot de passe n'est pas activée dans Firebase Authentication.",
+    "auth/email-already-in-use":"Ce login est déjà utilisé. Choisissez un autre login.",
+    "auth/invalid-email":"Le login utilisé produit une adresse Firebase invalide.",
+    "auth/weak-password":"Le mot de passe doit contenir au moins 6 caractères.",
+    "auth/network-request-failed":"Impossible de joindre Firebase. Vérifiez votre connexion Internet.",
+    "auth/api-key-not-valid.-please-pass-a-valid-api-key":"La clé API Firebase est invalide.",
+    "auth/invalid-api-key":"La clé API Firebase est invalide.",
+    "permission-denied":"Firestore refuse l'opération. Vérifiez les règles Firestore.",
+    "failed-precondition":"Firestore n'est pas correctement configuré ou une opération nécessite une configuration supplémentaire.",
+    "unavailable":"Le service Firestore est temporairement indisponible.",
+    "not-found":"Le document Firebase demandé n'existe pas.",
+    "already-exists":"Le document Firebase existe déjà.",
+    "resource-exhausted":"Quota Firebase dépassé.",
+    "unauthenticated":"Firebase demande une authentification.",
+    "invalid-argument":"Une donnée envoyée à Firebase est invalide."
+  };
+  let msg = map[code] || raw;
+  if(context) msg = `${context} — ${msg}`;
+  return `❌ ${msg} [${code}]`;
+}
+
+function loginEmail(login){
+  return login.trim().toLowerCase()+"@ma-classe-6eme.app";
+}
+function normalizeLogin(v){
+  return String(v||"").trim().toLowerCase();
+}
+function validLogin(login){
+  return /^[a-z0-9._-]{3,30}$/.test(login);
+}
+function showAuthError(msg){
+  const e=document.getElementById("authError");
+  e.textContent=msg;e.style.display="block";
+  document.getElementById("authInfo").style.display="none";
+}
+function showAuthInfo(msg){
+  const e=document.getElementById("authInfo");
+  e.textContent=msg;e.style.display="block";
+  document.getElementById("authError").style.display="none";
+}
+function clearAuthMessages(){
+  document.getElementById("authError").style.display="none";
+  document.getElementById("authInfo").style.display="none";
+}
+function authBusy(formId,busy){
+  const form=document.getElementById(formId); if(!form)return;
+  const btn=form.querySelector('button[type="submit"]');
+  if(btn){btn.disabled=busy;btn.dataset.originalText ??= btn.textContent;btn.textContent=busy?"Connexion à Firebase…":btn.dataset.originalText;}
+}
 
 async function initFirebase(){
   try{
@@ -358,6 +417,9 @@ async function initFirebase(){
     const db = fsMod.getFirestore(app);
     fb = {app,auth,db,authMod,fsMod};
     window.firebaseApp = fb;
+    firebaseReady = true;
+    const status=document.getElementById("firebaseStatus"); if(status) status.textContent="🟢 Firebase connecté";
+    console.log("Firebase initialisé", firebaseConfig.projectId);
 
     authMod.onAuthStateChanged(auth, async (user)=>{
       if(!user){
@@ -370,7 +432,7 @@ async function initFirebase(){
         const snap=await fsMod.getDoc(fsMod.doc(db,"users",user.uid));
         if(!snap.exists()){
           await authMod.signOut(auth);
-          showAuthError("Profil utilisateur introuvable.");
+          showAuthError("Votre compte Firebase existe, mais son profil Firestore est absent. Si vous venez de créer le premier compte, vérifiez les règles Firestore.");
           return;
         }
         currentProfile={uid:user.uid,...snap.data()};
@@ -383,19 +445,16 @@ async function initFirebase(){
         }
         enterApp();
       }catch(e){
-        console.error(e); showAuthError("Impossible de charger votre profil.");
+        await authMod.signOut(auth).catch(()=>{});
+        showAuthError(firebaseErrorMessage(e,"Chargement du profil"));
       }
     });
   }catch(e){
-    console.error("Firebase:",e);
-    showAuthError("Firebase n'est pas correctement configuré.");
+    firebaseReady=false;
+    const status=document.getElementById("firebaseStatus"); if(status) status.textContent="🔴 Firebase non disponible";
+    showAuthError(firebaseErrorMessage(e,"Initialisation Firebase"));
   }
 }
-
-function loginEmail(login){return login.trim().toLowerCase()+"@ma-classe-6eme.app";}
-function showAuthError(msg){const e=document.getElementById("authError");e.textContent=msg;e.style.display="block";document.getElementById("authInfo").style.display="none";}
-function showAuthInfo(msg){const e=document.getElementById("authInfo");e.textContent=msg;e.style.display="block";document.getElementById("authError").style.display="none";}
-function clearAuthMessages(){document.getElementById("authError").style.display="none";document.getElementById("authInfo").style.display="none";}
 
 function switchAuthMode(mode){
   clearAuthMessages();
@@ -411,53 +470,86 @@ function toggleParentFields(){
 }
 
 async function loginUser(){
-  if(!fb){showAuthError("Firebase n'est pas encore prêt.");return}
-  clearAuthMessages();
-  const login=document.getElementById("loginInput").value.trim().toLowerCase();
+  if(!firebaseReady){showAuthError("Firebase n'est pas encore prêt.");return;}
+  clearAuthMessages(); authBusy("loginForm",true);
+  const login=normalizeLogin(document.getElementById("loginInput").value);
   const password=document.getElementById("passwordInput").value;
-  try{await fb.authMod.signInWithEmailAndPassword(fb.auth,loginEmail(login),password);}
-  catch(e){console.error(e);showAuthError("Login ou mot de passe incorrect.");}
+  if(!validLogin(login)){
+    authBusy("loginForm",false);
+    showAuthError("Login invalide. Utilisez 3 à 30 caractères : lettres, chiffres, point, tiret ou underscore.");return;
+  }
+  try{
+    await fb.authMod.signInWithEmailAndPassword(fb.auth,loginEmail(login),password);
+  }catch(e){
+    showAuthError(firebaseErrorMessage(e,"Connexion"));
+  }finally{authBusy("loginForm",false);}
 }
 
 async function registerUser(){
-  if(!fb){showAuthError("Firebase n'est pas encore prêt.");return}
-  clearAuthMessages();
+  if(!firebaseReady){showAuthError("Firebase n'est pas encore prêt.");return;}
+  clearAuthMessages(); authBusy("registerForm",true);
   const firstName=document.getElementById("regFirstName").value.trim();
   const lastName=document.getElementById("regLastName").value.trim();
-  const login=document.getElementById("regLogin").value.trim().toLowerCase();
+  const login=normalizeLogin(document.getElementById("regLogin").value);
   const password=document.getElementById("regPassword").value;
   const password2=document.getElementById("regPassword2").value;
-  const role=document.querySelector('input[name="regRole"]:checked')?.value;
-  const childLogin=document.getElementById("childLogin").value.trim().toLowerCase();
+  const role=document.querySelector('input[name="regRole"]:checked')?.value || "eleve";
+  const childLogin=normalizeLogin(document.getElementById("childLogin").value);
 
-  if(password!==password2){showAuthError("Les deux mots de passe sont différents.");return}
-  if(!/^[a-z0-9._-]{3,30}$/.test(login)){showAuthError("Login invalide.");return}
+  if(!firstName || !lastName){authBusy("registerForm",false);showAuthError("Veuillez renseigner le prénom et le nom.");return;}
+  if(!validLogin(login)){
+    authBusy("registerForm",false);
+    showAuthError("Login invalide. Utilisez 3 à 30 caractères : lettres, chiffres, point, tiret ou underscore. Exemple : admin123");return;
+  }
+  if(password.length<6){authBusy("registerForm",false);showAuthError("Le mot de passe doit contenir au moins 6 caractères.");return;}
+  if(password!==password2){authBusy("registerForm",false);showAuthError("Les deux mots de passe sont différents.");return;}
+  if(role==="parent" && !validLogin(childLogin)){authBusy("registerForm",false);showAuthError("Le login de l'enfant est invalide.");return;}
 
+  let createdCredential=null;
   try{
     const fs=fb.fsMod;
-    const existing=await fs.getDocs(fs.query(fs.collection(fb.db,"users"),fs.where("login","==",login)));
-    if(!existing.empty){showAuthError("Ce login est déjà utilisé.");return}
+
+    /*
+      CORRECTION V2 : l'ancienne version faisait un getDocs(users)
+      AVANT createUserWithEmailAndPassword(). Un visiteur non authentifié
+      peut être refusé par Firestore, ce qui provoquait simplement
+      "Erreur lors de la création du compte".
+      On crée donc d'abord l'identité Firebase Authentication.
+    */
+    createdCredential=await fb.authMod.createUserWithEmailAndPassword(
+      fb.auth,loginEmail(login),password
+    );
+    const uid=createdCredential.user.uid;
+
+    /* Après création Auth, l'utilisateur est authentifié et peut effectuer
+       les lectures Firestore autorisées par les règles. */
+    let isFirst=false;
+    try{
+      const settingsRef=fs.doc(fb.db,"system","config");
+      const settingsSnap=await fs.getDoc(settingsRef);
+      isFirst=!settingsSnap.exists() || settingsSnap.data().initialized!==true;
+    }catch(e){
+      throw Object.assign(new Error(e.message),{code:e.code,original:e,stage:"lecture system/config"});
+    }
 
     let child=null;
     if(role==="parent"){
-      const childSnap=await fs.getDocs(fs.query(fs.collection(fb.db,"users"),fs.where("login","==",childLogin),fs.where("role","==","eleve")));
-      if(childSnap.empty){showAuthError("Aucun compte élève ne correspond à ce login.");return}
+      const childSnap=await fs.getDocs(
+        fs.query(fs.collection(fb.db,"users"),
+          fs.where("login","==",childLogin),
+          fs.where("role","==","eleve"))
+      );
+      if(childSnap.empty){
+        throw Object.assign(new Error("Aucun compte élève ne correspond à ce login."),{code:"child-not-found",stage:"liaison parent-enfant"});
+      }
       child={uid:childSnap.docs[0].id,...childSnap.docs[0].data()};
     }
 
-    const cred=await fb.authMod.createUserWithEmailAndPassword(fb.auth,loginEmail(login),password);
-    const uid=cred.user.uid;
-
-    const settingsRef=fs.doc(fb.db,"system","config");
-    const settingsSnap=await fs.getDoc(settingsRef);
-    const isFirst=!settingsSnap.exists() || settingsSnap.data().initialized!==true;
-
-    if(isFirst){
-      await fs.setDoc(settingsRef,{initialized:true,firstAdminUid:uid,createdAt:fs.serverTimestamp()},{merge:true});
-    }
-
-    await fs.setDoc(fs.doc(fb.db,"users",uid),{
-      login,firstName,lastName,displayName:(firstName+" "+lastName).trim(),
+    const batch=fs.writeBatch(fb.db);
+    const userRef=fs.doc(fb.db,"users",uid);
+    batch.set(userRef,{
+      login,firstName,lastName,
+      displayName:(firstName+" "+lastName).trim(),
       role:isFirst?"admin":role,
       status:isFirst?"approved":"pending",
       classId:"",
@@ -465,26 +557,45 @@ async function registerUser(){
       approvedAt:isFirst?fs.serverTimestamp():null
     });
 
+    if(isFirst){
+      batch.set(fs.doc(fb.db,"system","config"),{
+        initialized:true,
+        firstAdminUid:uid,
+        createdAt:fs.serverTimestamp()
+      },{merge:true});
+    }
+
     if(role==="parent" && child){
-      await fs.addDoc(fs.collection(fb.db,"parentLinks"),{
-        parentUid:uid,parentLogin:login,childUid:child.uid,childLogin:child.login,
-        status:"pending",reported:false,createdAt:fs.serverTimestamp()
+      batch.set(fs.doc(fs.collection(fb.db,"parentLinks")),{
+        parentUid:uid,parentLogin:login,
+        childUid:child.uid,childLogin:child.login,
+        status:"pending",reported:false,
+        createdAt:fs.serverTimestamp()
       });
     }
 
+    await batch.commit();
+
     if(isFirst){
-      showAuthInfo("Compte administrateur créé. Connexion en cours...");
+      showAuthInfo("🎉 Premier compte créé : vous êtes maintenant ADMINISTRATEUR. Connexion en cours…");
+      // onAuthStateChanged chargera automatiquement le profil et ouvrira l'application
     }else{
       await fb.authMod.signOut(fb.auth);
       switchAuthMode("login");
-      showAuthInfo("Compte créé. Il doit maintenant être validé par l'administrateur.");
+      showAuthInfo("✅ Compte créé. Il doit maintenant être validé par l'administrateur.");
     }
   }catch(e){
-    console.error(e);
-    if(e.code==="auth/email-already-in-use")showAuthError("Ce login est déjà utilisé.");
-    else if(e.code==="auth/weak-password")showAuthError("Le mot de passe doit contenir au moins 6 caractères.");
-    else showAuthError("Erreur lors de la création du compte.");
-  }
+    console.error("REGISTER ERROR",e);
+    /* Si Auth a réussi mais Firestore échoue, on supprime l'utilisateur Auth
+       pour éviter de laisser un compte orphelin qui bloque le même login. */
+    if(createdCredential?.user){
+      try{await fb.authMod.deleteUser(createdCredential.user);}catch(cleanErr){
+        console.warn("Impossible de supprimer le compte Auth orphelin",cleanErr);
+      }
+    }
+    if(e.code==="child-not-found")showAuthError("❌ Aucun compte élève ne correspond au login indiqué.");
+    else showAuthError(firebaseErrorMessage(e,"Création du compte"));
+  }finally{authBusy("registerForm",false);}
 }
 
 function enterApp(){
@@ -493,11 +604,9 @@ function enterApp(){
   document.getElementById("userName").textContent=fullName;
   document.getElementById("roleLabel").textContent=(currentProfile.classId?currentProfile.classId+" • ":"")+roleLabel(currentProfile.role);
   document.querySelector(".avatar").textContent=(fullName[0]||"?").toUpperCase();
-
   document.getElementById("adminNav").classList.toggle("hidden",currentProfile.role!=="admin");
   document.getElementById("teacherNav").classList.toggle("hidden",!["admin","teacher"].includes(currentProfile.role));
   document.getElementById("familyNav").classList.toggle("hidden",currentProfile.role!=="eleve");
-
   showPage("home");
   if(currentProfile.role==="admin")loadAdminData();
   if(currentProfile.role==="eleve")loadFamily();
@@ -507,33 +616,32 @@ async function logoutUser(){if(fb)await fb.authMod.signOut(fb.auth);switchAuthMo
 
 async function loadAdminData(){
   if(!currentProfile||currentProfile.role!=="admin")return;
-  const fs=fb.fsMod;
-  const snap=await fs.getDocs(fs.collection(fb.db,"users"));
-  const users=snap.docs.map(d=>({uid:d.id,...d.data()}));
-  const counts={eleve:0,teacher:0,parent:0};
-  users.forEach(u=>{if(counts[u.role]!=null)counts[u.role]++;});
-  document.getElementById("adminStudents").textContent=counts.eleve;
-  document.getElementById("adminTeachers").textContent=counts.teacher;
-  document.getElementById("adminParents").textContent=counts.parent;
-  document.getElementById("adminPending").textContent=users.filter(u=>u.status==="pending").length;
-
-  const pending=users.filter(u=>u.status==="pending");
-  document.getElementById("pendingUsers").innerHTML=pending.length
-    ?pending.map(u=>`<div class="item"><div class="row"><div><strong>${escapeHtml(u.displayName||u.login)}</strong><div class="muted">${escapeHtml(u.login)} • ${roleLabel(u.role)}</div></div><div><button class="btn success small" onclick="approveUser('${u.uid}')">✓ Valider</button> <button class="btn danger small" onclick="rejectUser('${u.uid}')">✕ Refuser</button></div></div></div>`).join("")
-    :'<div class="muted">Aucune demande en attente.</div>';
-
-  document.getElementById("allUsers").innerHTML=users.map(u=>`
-    <div class="item"><div class="row">
-      <div><strong>${escapeHtml(u.displayName||u.login)}</strong><div class="muted">${escapeHtml(u.login)} • ${roleLabel(u.role)} • ${u.status}</div></div>
-      <select class="input" style="width:auto" onchange="changeUserRole('${u.uid}',this.value)" ${u.uid===currentUser.uid?'disabled':''}>
-        ${["eleve","teacher","parent","admin"].map(r=>`<option value="${r}" ${r===u.role?"selected":""}>${roleLabel(r)}</option>`).join("")}
-      </select>
-    </div></div>`).join("");
-
-  const links=await fs.getDocs(fs.collection(fb.db,"parentLinks"));
-  document.getElementById("parentLinksAdmin").innerHTML=links.empty
-    ?'<div class="muted">Aucune liaison.</div>'
-    :links.docs.map(d=>{const l=d.data();return `<div class="item"><div class="row"><div>👨‍👩‍👧 <strong>${escapeHtml(l.parentLogin||"parent")}</strong> → ${escapeHtml(l.childLogin||"enfant")}<div class="muted">Statut : ${l.status}</div></div><span class="chip">${l.reported?"⚠️ signalé":"OK"}</span></div></div>`;}).join("");
+  try{
+    const fs=fb.fsMod;
+    const snap=await fs.getDocs(fs.collection(fb.db,"users"));
+    const users=snap.docs.map(d=>({uid:d.id,...d.data()}));
+    const counts={eleve:0,teacher:0,parent:0};
+    users.forEach(u=>{if(counts[u.role]!=null)counts[u.role]++;});
+    document.getElementById("adminStudents").textContent=counts.eleve;
+    document.getElementById("adminTeachers").textContent=counts.teacher;
+    document.getElementById("adminParents").textContent=counts.parent;
+    document.getElementById("adminPending").textContent=users.filter(u=>u.status==="pending").length;
+    const pending=users.filter(u=>u.status==="pending");
+    document.getElementById("pendingUsers").innerHTML=pending.length
+      ?pending.map(u=>`<div class="item"><div class="row"><div><strong>${escapeHtml(u.displayName||u.login)}</strong><div class="muted">${escapeHtml(u.login)} • ${roleLabel(u.role)}</div></div><div><button class="btn success small" onclick="approveUser('${u.uid}')">✓ Valider</button> <button class="btn danger small" onclick="rejectUser('${u.uid}')">✕ Refuser</button></div></div></div>`).join("")
+      :'<div class="muted">Aucune demande en attente.</div>';
+    document.getElementById("allUsers").innerHTML=users.map(u=>`
+      <div class="item"><div class="row">
+        <div><strong>${escapeHtml(u.displayName||u.login)}</strong><div class="muted">${escapeHtml(u.login)} • ${roleLabel(u.role)} • ${u.status}</div></div>
+        <select class="input" style="width:auto" onchange="changeUserRole('${u.uid}',this.value)" ${u.uid===currentUser.uid?'disabled':''}>
+          ${["eleve","teacher","parent","admin"].map(r=>`<option value="${r}" ${r===u.role?"selected":""}>${roleLabel(r)}</option>`).join("")}
+        </select>
+      </div></div>`).join("");
+    const links=await fs.getDocs(fs.collection(fb.db,"parentLinks"));
+    document.getElementById("parentLinksAdmin").innerHTML=links.empty
+      ?'<div class="muted">Aucune liaison.</div>'
+      :links.docs.map(d=>{const l=d.data();return `<div class="item"><div class="row"><div>👨‍👩‍👧 <strong>${escapeHtml(l.parentLogin||"parent")}</strong> → ${escapeHtml(l.childLogin||"enfant")}<div class="muted">Statut : ${l.status}</div></div><span class="chip">${l.reported?"⚠️ signalé":"OK"}</span></div></div>`;}).join("");
+  }catch(e){showAuthError(firebaseErrorMessage(e,"Chargement administration"));}
 }
 async function approveUser(uid){if(currentProfile.role!=="admin")return;await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"users",uid),{status:"approved",approvedAt:fb.fsMod.serverTimestamp()});toast("Compte validé.");loadAdminData();}
 async function rejectUser(uid){if(currentProfile.role!=="admin")return;await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"users",uid),{status:"rejected"});toast("Compte refusé.");loadAdminData();}
@@ -541,32 +649,36 @@ async function changeUserRole(uid,role){if(currentProfile.role!=="admin")return;
 
 async function loadFamily(){
   if(!currentProfile||currentProfile.role!=="eleve")return;
-  const fs=fb.fsMod;
-  const q=fs.query(fs.collection(fb.db,"parentLinks"),fs.where("childUid","==",currentUser.uid));
-  const snap=await fs.getDocs(q);
-  const links=snap.docs.map(d=>({id:d.id,...d.data()}));
-  document.getElementById("familyList").innerHTML=links.length
-    ?links.map(l=>`<div class="item"><div class="row"><div><strong>👨‍👩‍👧 ${escapeHtml(l.parentLogin)}</strong><div class="muted">Parent lié • ${l.status==="approved"?"🟢 confirmé":"🟠 en attente"}</div></div><span class="chip">Lecture seule</span></div></div>`).join("")
-    :'<div class="muted">Aucun parent lié à ton compte.</div>';
-  document.getElementById("reportParent").innerHTML=links.length
-    ?links.map(l=>`<option value="${l.id}">${escapeHtml(l.parentLogin)}</option>`).join("")
-    :'<option value="">Aucun parent</option>';
+  try{
+    const fs=fb.fsMod;
+    const q=fs.query(fs.collection(fb.db,"parentLinks"),fs.where("childUid","==",currentUser.uid));
+    const snap=await fs.getDocs(q);
+    const links=snap.docs.map(d=>({id:d.id,...d.data()}));
+    document.getElementById("familyList").innerHTML=links.length
+      ?links.map(l=>`<div class="item"><div class="row"><div><strong>👨‍👩‍👧 ${escapeHtml(l.parentLogin)}</strong><div class="muted">Parent lié • ${l.status==="approved"?"🟢 confirmé":"🟠 en attente"}</div></div><span class="chip">Lecture seule</span></div></div>`).join("")
+      :'<div class="muted">Aucun parent lié à ton compte.</div>';
+    document.getElementById("reportParent").innerHTML=links.length
+      ?links.map(l=>`<option value="${l.id}">${escapeHtml(l.parentLogin)}</option>`).join("")
+      :'<option value="">Aucun parent</option>';
+  }catch(e){showAuthError(firebaseErrorMessage(e,"Chargement famille"));}
 }
 async function reportParentIssue(){
   if(!currentProfile||currentProfile.role!=="eleve")return;
   const linkId=document.getElementById("reportParent").value;
   if(!linkId){toast("Aucun parent sélectionné.");return}
-  await fb.fsMod.addDoc(fb.fsMod.collection(fb.db,"reports"),{
-    childUid:currentUser.uid,linkId,
-    reason:document.getElementById("reportReason").value,
-    details:document.getElementById("reportDetails").value.trim(),
-    status:"open",createdAt:fb.fsMod.serverTimestamp()
-  });
-  await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"parentLinks",linkId),{reported:true});
-  document.getElementById("reportDetails").value="";
-  toast("Signalement envoyé à l'administrateur.");
-  loadFamily();
+  try{
+    await fb.fsMod.addDoc(fb.fsMod.collection(fb.db,"reports"),{
+      childUid:currentUser.uid,linkId,
+      reason:document.getElementById("reportReason").value,
+      details:document.getElementById("reportDetails").value.trim(),
+      status:"open",createdAt:fb.fsMod.serverTimestamp()
+    });
+    await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"parentLinks",linkId),{reported:true});
+    document.getElementById("reportDetails").value="";
+    toast("Signalement envoyé à l'administrateur.");loadFamily();
+  }catch(e){showAuthError(firebaseErrorMessage(e,"Signalement"));}
 }
+
 initFirebase();
 </script>
 </body>
