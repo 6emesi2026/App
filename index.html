@@ -1,694 +1,548 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#2563eb">
 <title>Ma Classe 6ème — Vie de classe</title>
-<meta name="theme-color" content="#4f46e5">
 
 <style>
+*{box-sizing:border-box}
+
 :root{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
   --bg:#f5f7fb;
   --card:#fff;
   --text:#172033;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --primary:#4f46e5;
-  --primary2:#6366f1;
+  --muted:#64748b;
+  --border:#e2e8f0;
   --success:#16a34a;
-  --warning:#d97706;
   --danger:#dc2626;
-  --shadow:0 8px 25px rgba(15,23,42,.07);
-  --radius:18px;
+  --warning:#d97706;
 }
-
-*{box-sizing:border-box}
 
 body{
   margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
   background:var(--bg);
-  color:var(--text)
+  color:var(--text);
 }
 
-button,input,textarea,select{font:inherit}
-button{cursor:pointer;border:0}
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   AUTHENTIFICATION
+========================= */
+
+.auth-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(135deg,#eff6ff,#f8fafc);
+}
+
+.auth-card{
+  width:min(500px,100%);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:22px;
+  box-shadow:0 20px 60px #0f172a18;
+  padding:30px;
+}
+
+.logo{
+  width:60px;
+  height:60px;
+  border-radius:16px;
+  background:var(--primary);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:28px;
+  font-weight:800;
+  margin-bottom:15px;
+}
+
+.auth-card h1{
+  font-size:26px;
+  margin:0 0 5px;
+}
+
+.subtitle{
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+.tabs{
+  display:flex;
+  background:#f1f5f9;
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:18px;
+}
+
+.tabs button{
+  flex:1;
+  padding:10px;
+  border-radius:9px;
+  background:transparent;
+  color:var(--muted);
+}
+
+.tabs button.active{
+  background:#fff;
+  color:var(--primary);
+  font-weight:700;
+  box-shadow:0 2px 8px #00000010;
+}
+
+.form-group{
+  margin-bottom:14px;
+}
+
+label{
+  display:block;
+  font-weight:650;
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
+  background:#fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 3px #2563eb12;
+}
+
+.primary{
+  background:var(--primary);
+  color:#fff;
+  padding:11px 16px;
+  border-radius:10px;
+  font-weight:700;
+}
+
+.primary:hover{
+  background:var(--primary-dark);
+}
+
+.secondary{
+  background:#eef2ff;
+  color:#3730a3;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:650;
+}
+
+.danger{
+  background:#fee2e2;
+  color:#991b1b;
+  padding:10px 14px;
+  border-radius:10px;
+}
+
+.full{
+  width:100%;
+}
+
+.auth-message{
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.auth-error{
+  background:#fef2f2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+}
+
+.auth-info{
+  background:#eff6ff;
+  color:#1d4ed8;
+  border:1px solid #bfdbfe;
+}
+
+.status{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:14px;
+}
+
+.role-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.role-option{
+  border:1px solid var(--border);
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.role-option input{
+  width:auto;
+  margin-right:5px;
+}
+
+.parent-fields{
+  padding:12px;
+  background:#f8fafc;
+  border-radius:12px;
+  margin-bottom:14px;
+}
+
+/* =========================
+   APPLICATION
+========================= */
 
 .app{
+  min-height:100vh;
   display:flex;
-  min-height:100vh
 }
 
 .sidebar{
   width:250px;
-  background:#111827;
-  color:#fff;
-  padding:20px 14px;
+  background:#0f172a;
+  color:#cbd5e1;
+  padding:18px 12px;
   position:fixed;
-  inset:0 auto 0 0;
+  left:0;
+  top:0;
+  bottom:0;
   overflow:auto;
-  z-index:20
 }
 
 .brand{
   display:flex;
-  gap:10px;
   align-items:center;
+  gap:10px;
   padding:8px 10px 20px;
-  font-weight:800;
-  font-size:20px
+  color:#fff;
 }
 
 .brand-icon{
-  background:#6366f1;
-  border-radius:12px;
-  padding:8px
+  width:38px;
+  height:38px;
+  background:var(--primary);
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  font-weight:800;
 }
 
-.nav-title{
+.brand strong{
+  font-size:16px;
+}
+
+.nav-section{
   font-size:11px;
   text-transform:uppercase;
-  color:#9ca3af;
-  margin:18px 10px 7px
+  color:#64748b;
+  font-weight:800;
+  padding:15px 10px 6px;
 }
 
-.nav button{
-  display:flex;
+.nav-btn{
   width:100%;
-  gap:11px;
+  display:flex;
+  gap:10px;
   align-items:center;
-  color:#d1d5db;
-  background:transparent;
-  padding:11px 12px;
-  border-radius:11px;
   text-align:left;
-  margin:2px 0
+  background:transparent;
+  color:#cbd5e1;
+  padding:10px;
+  border-radius:9px;
+  margin:2px 0;
 }
 
-.nav button:hover,
-.nav button.active{
-  background:#273449;
-  color:#fff
+.nav-btn:hover,
+.nav-btn.active{
+  background:#1e293b;
+  color:#fff;
+}
+
+.sidebar-bottom{
+  border-top:1px solid #1e293b;
+  margin-top:16px;
+  padding-top:14px;
 }
 
 .main{
   margin-left:250px;
   width:calc(100% - 250px);
   padding:24px;
-  max-width:1500px
 }
 
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:22px
+  gap:15px;
+  margin-bottom:24px;
 }
 
-.mobile-menu{
-  display:none
-}
-
-.profile{
+.user-chip{
   display:flex;
   align-items:center;
-  gap:10px
+  gap:10px;
+  background:#fff;
+  border:1px solid var(--border);
+  padding:8px 12px;
+  border-radius:12px;
 }
 
 .avatar{
-  width:40px;
-  height:40px;
+  width:36px;
+  height:36px;
   border-radius:50%;
   display:grid;
   place-items:center;
-  background:#e0e7ff;
-  color:#3730a3;
-  font-weight:800
+  background:#dbeafe;
+  color:#1d4ed8;
+  font-weight:800;
 }
 
-.page{display:none}
-.page.active{display:block}
-
-.hero{
-  background:linear-gradient(135deg,#4f46e5,#7c3aed);
-  color:white;
-  border-radius:24px;
-  padding:28px;
-  box-shadow:var(--shadow);
-  margin-bottom:20px
+.page{
+  display:none;
 }
 
-.hero h1{
-  margin:0 0 7px;
-  font-size:28px
-}
-
-.hero p{
-  margin:0;
-  opacity:.9
+.page.active{
+  display:block;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px
-}
-
-.grid-3{
-  display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:16px
+  gap:16px;
 }
 
 .grid-2{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:16px
+  gap:16px;
 }
 
 .card{
   background:var(--card);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
+  border:1px solid var(--border);
+  border-radius:16px;
   padding:18px;
-  box-shadow:var(--shadow)
+  box-shadow:0 3px 12px #0f172a06;
 }
 
-.stat .num{
-  font-size:27px;
+.stat{
+  font-size:28px;
   font-weight:800;
-  margin:7px 0
+  margin:7px 0;
 }
 
-.muted{color:var(--muted)}
+.muted{
+  color:var(--muted);
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  background:#eff6ff;
+  color:#1d4ed8;
+}
+
+.badge.green{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.badge.orange{
+  background:#ffedd5;
+  color:#9a3412;
+}
+
+.list{
+  display:grid;
+  gap:10px;
+}
+
+.list-item{
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#fff;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.hero{
+  background:linear-gradient(135deg,#2563eb,#4f46e5);
+  color:#fff;
+  border-radius:18px;
+  padding:24px;
+  margin-bottom:18px;
+}
+
+.hero p{
+  color:#dbeafe;
+}
 
 .section-title{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin:25px 0 12px
-}
-
-.section-title h2{
-  font-size:19px;
-  margin:0
-}
-
-.btn{
-  padding:10px 14px;
-  border-radius:11px;
-  background:#eef2ff;
-  color:#3730a3;
-  font-weight:700
-}
-
-.btn.primary{
-  background:var(--primary);
-  color:#fff
-}
-
-.btn.success{
-  background:#dcfce7;
-  color:#166534
-}
-
-.btn.warning{
-  background:#fef3c7;
-  color:#92400e
-}
-
-.btn.danger{
-  background:#fee2e2;
-  color:#991b1b
-}
-
-.btn.small{
-  padding:7px 10px;
-  font-size:13px
-}
-
-.btn:disabled{
-  opacity:.6;
-  cursor:not-allowed
-}
-
-.chips{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap
-}
-
-.chip{
-  background:#eef2ff;
-  color:#3730a3;
-  border-radius:999px;
-  padding:5px 9px;
-  font-size:12px;
-  font-weight:700
-}
-
-.progress{
-  height:9px;
-  background:#e5e7eb;
-  border-radius:99px;
-  overflow:hidden
-}
-
-.progress>span{
-  display:block;
-  height:100%;
-  background:var(--primary);
-  border-radius:99px
-}
-
-.row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px
-}
-
-.list{
-  display:flex;
-  flex-direction:column;
-  gap:10px
-}
-
-.item{
-  padding:13px;
-  border:1px solid var(--line);
-  border-radius:13px;
-  background:#fff
-}
-
-.iconbox{
-  font-size:28px
-}
-
-.coin{
-  color:#b45309;
-  font-weight:800
-}
-
-.rank{
-  display:grid;
-  grid-template-columns:38px 1fr auto;
-  align-items:center;
   gap:10px;
-  padding:10px;
-  border-bottom:1px solid var(--line)
+  margin:20px 0 12px;
 }
 
-.rank:last-child{border-bottom:0}
-
-.rankpos{
-  font-size:20px;
-  font-weight:800
+.coins{
+  color:#b45309;
+  font-weight:800;
 }
 
-.book{
-  display:flex;
-  gap:14px
-}
-
-.cover{
-  width:70px;
-  height:95px;
-  border-radius:9px;
-  background:linear-gradient(145deg,#fde68a,#fb923c);
-  display:grid;
-  place-items:center;
-  font-size:28px;
-  flex:none
-}
-
-.stars{
-  color:#f59e0b
-}
-
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:7px
-}
-
-.day{
-  min-height:100px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:9px;
-  background:#fff
-}
-
-.day strong{
-  font-size:12px
-}
-
-.lesson{
-  font-size:12px;
-  background:#eef2ff;
-  color:#3730a3;
-  padding:5px;
-  border-radius:7px;
-  margin-top:7px
-}
-
-.chat{
-  height:500px;
-  display:flex;
-  flex-direction:column
-}
-
-.messages{
-  flex:1;
-  overflow:auto;
-  padding:10px
-}
-
-.msg{
-  max-width:72%;
-  padding:10px 13px;
-  border-radius:14px;
-  background:#f1f5f9;
-  margin:8px 0
-}
-
-.msg.me{
-  margin-left:auto;
-  background:#e0e7ff
-}
-
-.chat-input{
-  display:flex;
-  gap:8px;
-  border-top:1px solid var(--line);
-  padding-top:12px
-}
-
-.chat-input input{
-  flex:1
-}
-
-.input,
-textarea,
-select{
+table{
   width:100%;
-  border:1px solid #d1d5db;
-  border-radius:10px;
-  padding:10px;
-  background:#fff
+  border-collapse:collapse;
 }
 
-.form{
-  display:grid;
-  gap:11px
+th,td{
+  text-align:left;
+  padding:10px;
+  border-bottom:1px solid var(--border);
+  font-size:14px;
 }
+
+th{
+  color:var(--muted);
+}
+
+/* =========================
+   MODAL
+========================= */
 
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(15,23,42,.55);
+  background:#0f172a88;
   display:none;
-  place-items:center;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
   z-index:50;
-  padding:20px
 }
 
 .modal.show{
-  display:grid
+  display:flex;
 }
 
 .modal-box{
-  background:#fff;
-  border-radius:20px;
-  width:min(760px,100%);
+  width:min(700px,100%);
   max-height:90vh;
   overflow:auto;
-  padding:22px
+  background:#fff;
+  border-radius:18px;
+  padding:22px;
 }
 
 .modal-head{
   display:flex;
   justify-content:space-between;
-  align-items:center
+  align-items:center;
 }
 
 .close{
-  background:#f3f4f6;
-  border-radius:10px;
-  padding:8px
-}
-
-.toolbar{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  border:1px solid var(--line);
-  padding:8px;
-  border-radius:10px;
-  background:#f8fafc
+  background:#f1f5f9;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  font-size:20px;
 }
 
 .editor{
-  min-height:180px;
-  border:1px solid #d1d5db;
+  min-height:150px;
+  border:1px solid var(--border);
   border-radius:10px;
-  padding:13px
-}
-
-.quiz-option{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  border:1px solid var(--line);
-  padding:11px;
-  border-radius:10px;
-  margin:7px 0
-}
-
-.toast{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  background:#111827;
-  color:#fff;
-  padding:13px 17px;
-  border-radius:12px;
-  display:none;
-  z-index:100
-}
-
-.toast.show{
-  display:block
-}
-
-.tabs{
-  display:flex;
-  gap:6px;
-  overflow:auto;
-  margin-bottom:14px
-}
-
-.tabs button{
-  background:#e5e7eb;
-  padding:9px 13px;
-  border-radius:10px;
-  white-space:nowrap
-}
-
-.tabs button.active{
-  background:var(--primary);
-  color:white
-}
-
-.hidden{
-  display:none!important
+  padding:12px;
 }
 
 /* =========================
-   AUTHENTIFICATION
-   ========================= */
+   RESPONSIVE
+========================= */
 
-#authScreen{
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  background:linear-gradient(135deg,#eef2ff,#f5f7fb);
-  display:grid;
-  place-items:center;
-  padding:20px
-}
+@media(max-width:900px){
 
-#authScreen.hidden{
-  display:none
-}
-
-.auth-box{
-  width:min(470px,100%);
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:24px;
-  padding:30px;
-  box-shadow:0 20px 60px rgba(15,23,42,.12)
-}
-
-.auth-logo{
-  text-align:center;
-  font-size:42px;
-  margin-bottom:8px
-}
-
-.auth-box h1{
-  text-align:center;
-  margin:0 0 6px
-}
-
-.auth-sub{
-  text-align:center;
-  color:#6b7280;
-  margin:0 0 22px
-}
-
-.auth-tabs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-  background:#f3f4f6;
-  padding:5px;
-  border-radius:12px;
-  margin-bottom:18px
-}
-
-.auth-tabs button{
-  padding:10px;
-  border-radius:9px;
-  background:transparent
-}
-
-.auth-tabs button.active{
-  background:#fff;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-  font-weight:700
-}
-
-.auth-error{
-  display:none;
-  background:#fee2e2;
-  color:#991b1b;
-  padding:10px 12px;
-  border-radius:10px;
-  margin-bottom:12px;
-  font-size:14px;
-  line-height:1.45
-}
-
-.auth-info{
-  display:none;
-  background:#eef2ff;
-  color:#3730a3;
-  padding:10px 12px;
-  border-radius:10px;
-  margin-bottom:12px;
-  font-size:14px;
-  line-height:1.45
-}
-
-.auth-help{
-  font-size:12px;
-  color:#6b7280;
-  line-height:1.5;
-  margin-top:12px
-}
-
-.role-card{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px
-}
-
-.role-card label{
-  border:1px solid #d1d5db;
-  border-radius:10px;
-  padding:10px;
-  cursor:pointer
-}
-
-.role-card label:has(input:checked){
-  border-color:#4f46e5;
-  background:#eef2ff
-}
-
-.role-card input{
-  margin-right:7px
-}
-
-.firebase-status{
-  font-size:12px;
-  color:#6b7280;
-  margin:-8px 0 14px;
-  text-align:center
-}
-
-@media(max-width:1000px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-  .grid-3{grid-template-columns:repeat(2,1fr)}
-}
-
-@media(max-width:760px){
   .sidebar{
-    transform:translateX(-100%);
-    transition:.2s
+    width:72px;
+    padding:12px 8px;
   }
 
-  .sidebar.open{
-    transform:none
+  .brand span,
+  .brand strong,
+  .nav-btn span,
+  .nav-section,
+  .sidebar-bottom .muted{
+    display:none;
+  }
+
+  .brand{
+    justify-content:center;
   }
 
   .main{
-    margin-left:0;
-    width:100%;
-    padding:14px
-  }
-
-  .mobile-menu{
-    display:block;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:8px
-  }
-
-  .topbar{
-    margin-bottom:14px
+    margin-left:72px;
+    width:calc(100% - 72px);
   }
 
   .grid,
-  .grid-2,
-  .grid-3{
-    grid-template-columns:1fr
-  }
-
-  .calendar{
-    grid-template-columns:1fr 1fr
-  }
-
-  .hero{
-    padding:20px
-  }
-
-  .hero h1{
-    font-size:23px
+  .grid-2{
+    grid-template-columns:1fr;
   }
 }
 
-@media(max-width:500px){
-  .auth-box{
-    padding:22px
+@media(max-width:600px){
+
+  .main{
+    padding:14px;
   }
 
-  .role-card{
-    grid-template-columns:1fr
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .role-grid{
+    grid-template-columns:1fr;
   }
 }
 </style>
@@ -698,4005 +552,1709 @@ select{
 
 <!-- =========================================================
      AUTHENTIFICATION
-     ========================================================= -->
+========================================================= -->
 
-<div id="authScreen">
+<div id="authScreen" class="auth-screen">
 
-  <div class="auth-box">
+  <div class="auth-card">
 
-    <div class="auth-logo">🏫</div>
+    <div class="logo">📚</div>
 
     <h1>Ma Classe 6ème</h1>
 
-    <p class="auth-sub">
-      Espace sécurisé de la vie de classe
-    </p>
-
-    <div class="auth-tabs">
-      <button id="loginTab"
-              class="active"
-              onclick="switchAuthMode('login')">
-        Se connecter
-      </button>
-
-      <button id="registerTab"
-              onclick="switchAuthMode('register')">
-        Créer un compte
-      </button>
+    <div class="subtitle">
+      Vie de classe — espace élèves, professeurs et familles
     </div>
 
-    <div id="authError" class="auth-error"></div>
+    <div class="tabs">
 
-    <div id="authInfo" class="auth-info"></div>
+      <button
+        id="loginTab"
+        class="active"
+        onclick="switchAuthMode('login')">
+        Connexion
+      </button>
 
-    <div id="firebaseStatus"
-         class="firebase-status">
-      🔄 Connexion à Firebase…
+      <button
+        id="registerTab"
+        onclick="switchAuthMode('register')">
+        Créer un compte
+      </button>
+
+    </div>
+
+    <div
+      id="authError"
+      class="auth-message auth-error hidden">
+    </div>
+
+    <div
+      id="authInfo"
+      class="auth-message auth-info hidden">
     </div>
 
     <!-- LOGIN -->
 
-    <form id="loginForm"
-          class="form"
-          onsubmit="event.preventDefault();loginUser()">
+    <form
+      id="loginForm"
+      onsubmit="event.preventDefault();loginUser()">
 
-      <label>
-        Login
-        <input id="loginInput"
-               class="input"
-               autocomplete="username"
-               required
-               placeholder="ex. admin123"
-               inputmode="text">
-      </label>
+      <div class="form-group">
 
-      <label>
-        Mot de passe
-        <input id="passwordInput"
-               class="input"
-               type="password"
-               autocomplete="current-password"
-               required>
-      </label>
+        <label for="loginInput">
+          Login
+        </label>
 
-      <button class="btn primary"
-              type="submit">
-        🔐 Se connecter
+        <input
+          id="loginInput"
+          autocomplete="username"
+          required
+          placeholder="ex. adel.hamdi">
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="passwordInput">
+          Mot de passe
+        </label>
+
+        <input
+          id="passwordInput"
+          type="password"
+          autocomplete="current-password"
+          required>
+
+      </div>
+
+      <button
+        id="loginBtn"
+        class="primary full"
+        type="submit">
+
+        Se connecter
+
       </button>
 
     </form>
 
     <!-- REGISTER -->
 
-    <form id="registerForm"
-          class="form hidden"
-          onsubmit="event.preventDefault();registerUser()">
+    <form
+      id="registerForm"
+      class="hidden"
+      onsubmit="event.preventDefault();registerUser()">
 
       <div class="grid-2">
 
-        <label>
-          Prénom
-          <input id="regFirstName"
-                 class="input"
-                 required>
-        </label>
+        <div class="form-group">
 
-        <label>
-          Nom
-          <input id="regLastName"
-                 class="input"
-                 required>
-        </label>
+          <label for="regFirstName">
+            Prénom
+          </label>
 
-      </div>
+          <input
+            id="regFirstName"
+            required>
 
-      <label>
-        Login
-        <input id="regLogin"
-               class="input"
-               required
-               pattern="[A-Za-z0-9._-]{3,30}"
-               placeholder="ex. admin123"
-               inputmode="text">
-      </label>
+        </div>
 
-      <label>
-        Mot de passe
-        <input id="regPassword"
-               class="input"
-               type="password"
-               minlength="6"
-               required>
-      </label>
+        <div class="form-group">
 
-      <label>
-        Confirmer le mot de passe
-        <input id="regPassword2"
-               class="input"
-               type="password"
-               minlength="6"
-               required>
-      </label>
+          <label for="regLastName">
+            Nom
+          </label>
 
-      <label>Je suis :</label>
+          <input
+            id="regLastName"
+            required>
 
-      <div class="role-card">
-
-        <label>
-          <input type="radio"
-                 name="regRole"
-                 value="eleve"
-                 checked
-                 onchange="toggleParentFields()">
-          Élève
-        </label>
-
-        <label>
-          <input type="radio"
-                 name="regRole"
-                 value="teacher"
-                 onchange="toggleParentFields()">
-          Maître(sse)
-        </label>
-
-        <label>
-          <input type="radio"
-                 name="regRole"
-                 value="parent"
-                 onchange="toggleParentFields()">
-          Parent
-        </label>
-
-      </div>
-
-      <div id="parentFields" class="hidden">
-
-        <label>
-          Login exact de mon enfant
-          <input id="childLogin"
-                 class="input"
-                 placeholder="ex. adam123">
-        </label>
-
-        <div class="auth-help">
-          La liaison sera créée en attente de validation.
-          Votre enfant pourra voir la liaison et signaler un problème.
         </div>
 
       </div>
 
-      <button class="btn primary"
-              type="submit">
-        Créer mon compte
+      <div class="form-group">
+
+        <label for="regLogin">
+          Login
+        </label>
+
+        <input
+          id="regLogin"
+          required
+          placeholder="ex. adel.hamdi">
+
+      </div>
+
+      <div class="grid-2">
+
+        <div class="form-group">
+
+          <label for="regPassword">
+            Mot de passe
+          </label>
+
+          <input
+            id="regPassword"
+            type="password"
+            minlength="6"
+            required>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="regPassword2">
+            Confirmation
+          </label>
+
+          <input
+            id="regPassword2"
+            type="password"
+            minlength="6"
+            required>
+
+        </div>
+
+      </div>
+
+      <label>
+        Profil
+      </label>
+
+      <div class="role-grid">
+
+        <label class="role-option">
+
+          <input
+            type="radio"
+            name="regRole"
+            value="eleve"
+            checked
+            onchange="toggleParentFields()">
+
+          Élève
+
+        </label>
+
+        <label class="role-option">
+
+          <input
+            type="radio"
+            name="regRole"
+            value="teacher"
+            onchange="toggleParentFields()">
+
+          Professeur
+
+        </label>
+
+        <label class="role-option">
+
+          <input
+            type="radio"
+            name="regRole"
+            value="parent"
+            onchange="toggleParentFields()">
+
+          Parent
+
+        </label>
+
+      </div>
+
+      <div
+        id="parentFields"
+        class="parent-fields hidden">
+
+        <div class="form-group">
+
+          <label for="childLogin">
+            Login de l'élève
+          </label>
+
+          <input
+            id="childLogin"
+            placeholder="Login de votre enfant">
+
+        </div>
+
+      </div>
+
+      <button
+        id="registerBtn"
+        class="primary full"
+        type="submit">
+
+        Créer le compte
+
       </button>
 
     </form>
 
-    <div class="auth-help">
-      Le mot de passe est géré par Firebase Authentication
-      et n'est jamais enregistré en clair dans Firestore.
+    <div
+      id="firebaseStatus"
+      class="status">
+
+      🟡 Initialisation de Firebase…
+
     </div>
 
   </div>
+
 </div>
 
 
 <!-- =========================================================
      APPLICATION
-     ========================================================= -->
+========================================================= -->
 
-<div class="app">
+<div id="app" class="app hidden">
 
-<aside class="sidebar" id="sidebar">
+  <!-- SIDEBAR -->
 
-  <div class="brand">
-    <span class="brand-icon">🏫</span>
-    Ma Classe 6ème
-  </div>
+  <aside class="sidebar">
 
-  <div class="nav-title">Élève</div>
+    <div class="brand">
 
-  <nav class="nav">
-
-    <button class="active" data-page="home">
-      🏠 Accueil
-    </button>
-
-    <button data-page="schedule">
-      📅 Emploi du temps
-    </button>
-
-    <button data-page="discussions">
-      💬 Discussions
-    </button>
-
-    <button data-page="games">
-      🎮 Jouer
-    </button>
-
-    <button data-page="quizzes">
-      🧠 Quiz
-    </button>
-
-    <button data-page="library">
-      📚 Bibliothèque
-    </button>
-
-    <button data-page="activities">
-      🌳 Activités
-    </button>
-
-    <button data-page="groups">
-      👥 Équipes & groupes
-    </button>
-
-    <button data-page="challenges">
-      🏆 Challenges
-    </button>
-
-    <button data-page="coins">
-      🪙 ClassCoins
-    </button>
-
-    <button data-page="collab">
-      🤝 Collaboration
-    </button>
-
-    <button data-page="delegates">
-      👥 Délégués
-    </button>
-
-  </nav>
-
-
-  <div class="nav-title">
-    Administration
-  </div>
-
-  <nav class="nav">
-
-    <button data-page="admin"
-            id="adminNav"
-            class="hidden">
-      👑 Administration
-    </button>
-
-    <button data-page="teacher"
-            id="teacherNav"
-            class="hidden">
-      👨‍🏫 Espace professeur
-    </button>
-
-    <button data-page="family"
-            id="familyNav"
-            class="hidden">
-      👨‍👩‍👧 Ma famille
-    </button>
-
-    <button onclick="logoutUser()">
-      🚪 Se déconnecter
-    </button>
-
-  </nav>
-
-</aside>
-
-
-<main class="main">
-
-<header class="topbar">
-
-  <button class="mobile-menu"
-          onclick="toggleSidebar()">
-    ☰
-  </button>
-
-  <div>
-    <strong id="pageTitle">
-      Accueil
-    </strong>
-
-    <div class="muted"
-         id="roleLabel">
-      6ème A • Élève
-    </div>
-  </div>
-
-  <div class="profile">
-
-    <div>
-
-      <strong id="userName">
-        Adam
-      </strong>
-
-      <div class="coin">
-        🪙
-        <span id="coinBalance">850</span>
-      </div>
-
-    </div>
-
-    <div class="avatar">
-      A
-    </div>
-
-  </div>
-
-</header>
-
-
-<!-- =========================================================
-     ACCUEIL
-     ========================================================= -->
-
-<section class="page active" id="home">
-
-  <div class="hero">
-
-    <h1>
-      👋 Bonjour Adam !
-    </h1>
-
-    <p>
-      Bienvenue dans ton espace de vie de classe.
-    </p>
-
-  </div>
-
-  <div class="grid">
-
-    <div class="card stat">
-      🪙
-      <div class="num" id="homeCoins">
-        850
-      </div>
-      <div class="muted">
-        ClassCoins
-      </div>
-    </div>
-
-    <div class="card stat">
-      🏆
-      <div class="num">
-        #4
-      </div>
-      <div class="muted">
-        Classement
-      </div>
-    </div>
-
-    <div class="card stat">
-      📚
-      <div class="num">
-        12
-      </div>
-      <div class="muted">
-        Livres lus
-      </div>
-    </div>
-
-    <div class="card stat">
-      🔥
-      <div class="num">
-        5
-      </div>
-      <div class="muted">
-        Badges
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="section-title">
-
-    <h2>
-      🎯 Challenge de la semaine
-    </h2>
-
-    <button class="btn small"
-            onclick="openChallenge()">
-      Voir
-    </button>
-
-  </div>
-
-
-  <div class="card">
-
-    <div class="row">
-
-      <div>
-
-        <strong>
-          Jouons ensemble
-        </strong>
-
-        <p class="muted">
-          30 élèves participent à une activité réelle cette semaine.
-        </p>
-
+      <div class="brand-icon">
+        📚
       </div>
 
       <strong>
-        24 / 30
+        Ma Classe 6ème
       </strong>
 
     </div>
 
-    <div class="progress">
-      <span style="width:80%"></span>
+    <div class="nav-section">
+      Principal
     </div>
 
-  </div>
+    <button
+      class="nav-btn active"
+      data-page="home">
+
+      <span>🏠</span>
+      <span>Accueil</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="schedule">
+
+      <span>📅</span>
+      <span>Emploi du temps</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="discussions">
+
+      <span>💬</span>
+      <span>Discussions</span>
+
+    </button>
 
 
-  <div class="grid-2">
+    <div class="nav-section">
+      Vie de classe
+    </div>
 
-    <div>
+    <button
+      class="nav-btn"
+      data-page="games">
 
-      <div class="section-title">
-        <h2>
-          📅 Prochain événement
-        </h2>
+      <span>🎮</span>
+      <span>Jouer</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="quiz">
+
+      <span>🧠</span>
+      <span>Quiz</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="library">
+
+      <span>📚</span>
+      <span>Bibliothèque</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="activities">
+
+      <span>🏃</span>
+      <span>Activités</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="teams">
+
+      <span>👥</span>
+      <span>Équipes & groupes</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="challenges">
+
+      <span>🏆</span>
+      <span>Challenges</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="coins">
+
+      <span>🪙</span>
+      <span>ClassCoins</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="collaboration">
+
+      <span>🤝</span>
+      <span>Collaboration</span>
+
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="delegates">
+
+      <span>🗳️</span>
+      <span>Délégués</span>
+
+    </button>
+
+
+    <div class="nav-section">
+      Espace personnel
+    </div>
+
+    <button
+      class="nav-btn role-parent"
+      data-page="family">
+
+      <span>👨‍👩‍👧</span>
+      <span>Ma famille</span>
+
+    </button>
+
+    <button
+      class="nav-btn role-teacher role-admin"
+      data-page="teacher">
+
+      <span>👨‍🏫</span>
+      <span>Espace professeur</span>
+
+    </button>
+
+    <button
+      class="nav-btn role-admin"
+      data-page="admin">
+
+      <span>⚙️</span>
+      <span>Administration</span>
+
+    </button>
+
+
+    <div class="sidebar-bottom">
+
+      <div
+        class="muted"
+        style="font-size:12px;padding:0 10px">
+
+        Firebase • Firestore
+
       </div>
 
-      <div class="card">
+      <button
+        class="nav-btn"
+        onclick="logoutUser()">
 
-        <strong>
-          🎲 Jeux de société
-        </strong>
+        <span>🚪</span>
+        <span>Déconnexion</span>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN -->
+
+  <main class="main">
+
+    <div class="topbar">
+
+      <div>
+
+        <h2 id="pageTitle">
+          Accueil
+        </h2>
+
+        <div
+          class="muted"
+          id="pageSubtitle">
+
+          Bienvenue dans votre espace de classe.
+
+        </div>
+
+      </div>
+
+      <div class="user-chip">
+
+        <div
+          id="userAvatar"
+          class="avatar">
+
+          ?
+
+        </div>
+
+        <div>
+
+          <div
+            id="userName"
+            style="font-weight:750">
+
+            Utilisateur
+
+          </div>
+
+          <div
+            id="userRole"
+            class="muted"
+            style="font-size:12px">
+
+            —
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ACCUEIL -->
+
+    <section
+      id="page-home"
+      class="page active">
+
+      <div class="hero">
+
+        <h1 id="welcomeTitle">
+          Bienvenue 👋
+        </h1>
 
         <p>
-          Samedi • 15:00 • Chez Sarah
+          Un espace commun pour apprendre,
+          jouer, collaborer et faire vivre la classe.
         </p>
 
-        <div class="row">
+        <div class="actions">
 
-          <span>
-            6 / 8 participants
-          </span>
+          <button
+            class="primary"
+            onclick="showPage('discussions')">
 
-          <button class="btn primary small"
-                  onclick="joinActivity()">
-            Je participe
+            💬 Ouvrir les discussions
+
+          </button>
+
+          <button
+            class="secondary"
+            onclick="showPage('activities')">
+
+            🏃 Voir les activités
+
           </button>
 
         </div>
 
       </div>
 
-    </div>
+      <div class="grid">
 
+        <div class="card">
 
-    <div>
+          <div class="muted">
+            Mes ClassCoins
+          </div>
+
+          <div
+            id="homeCoins"
+            class="stat coins">
+
+            🪙 0
+
+          </div>
+
+          <div class="muted">
+            Solde actuel
+          </div>
+
+        </div>
+
+        <div class="card">
+
+          <div class="muted">
+            Challenges
+          </div>
+
+          <div class="stat">
+            🏆 4
+          </div>
+
+          <div class="muted">
+            Challenges actifs
+          </div>
+
+        </div>
+
+        <div class="card">
+
+          <div class="muted">
+            Activités
+          </div>
+
+          <div class="stat">
+            🎯 6
+          </div>
+
+          <div class="muted">
+            Cette semaine
+          </div>
+
+        </div>
+
+      </div>
 
       <div class="section-title">
-        <h2>
-          🏆 Top 5
-        </h2>
+        <h3>À la une</h3>
       </div>
 
-      <div class="card"
-           id="top5">
+      <div class="grid-2">
+
+        <div class="card">
+
+          <h3>
+            📢 Annonce de la classe
+          </h3>
+
+          <p class="muted">
+            Bienvenue dans la nouvelle plateforme de vie
+            de classe. Pensez à consulter régulièrement
+            les challenges et activités.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            🎲 Sortie entre amis
+          </h3>
+
+          <p class="muted">
+            Proposez chaque semaine une activité :
+            jeux de société, sport, découverte ou sortie.
+          </p>
+
+        </div>
+
       </div>
 
-    </div>
-
-  </div>
-
-</section>
+    </section>
 
 
-<!-- =========================================================
-     EMPLOI DU TEMPS
-     ========================================================= -->
+    <!-- EMPLOI DU TEMPS -->
 
-<section class="page" id="schedule">
+    <section
+      id="page-schedule"
+      class="page">
 
-  <div class="hero">
+      <div class="card">
 
-    <h1>
-      📅 Emploi du temps
-    </h1>
+        <h3>
+          📅 Emploi du temps
+        </h3>
 
-    <p>
-      La semaine de la classe 6ème A.
-    </p>
+        <table>
 
-  </div>
+          <thead>
 
-  <div class="card">
+            <tr>
+              <th>Jour</th>
+              <th>08:00</th>
+              <th>09:00</th>
+              <th>10:00</th>
+              <th>11:00</th>
+              <th>14:00</th>
+            </tr>
 
-    <div class="calendar"
-         id="calendar">
-    </div>
+          </thead>
 
-  </div>
+          <tbody>
 
-</section>
+            <tr>
+              <td>Lundi</td>
+              <td>Maths</td>
+              <td>Français</td>
+              <td>SVT</td>
+              <td>Anglais</td>
+              <td>EPS</td>
+            </tr>
 
+            <tr>
+              <td>Mardi</td>
+              <td>Histoire</td>
+              <td>Maths</td>
+              <td>Anglais</td>
+              <td>Technologie</td>
+              <td>Français</td>
+            </tr>
 
-<!-- =========================================================
-     DISCUSSIONS
-     ========================================================= -->
+            <tr>
+              <td>Mercredi</td>
+              <td>SVT</td>
+              <td>Maths</td>
+              <td>Français</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
 
-<section class="page" id="discussions">
+            <tr>
+              <td>Jeudi</td>
+              <td>Anglais</td>
+              <td>Maths</td>
+              <td>Histoire</td>
+              <td>Arts</td>
+              <td>EPS</td>
+            </tr>
 
-  <div class="hero">
+            <tr>
+              <td>Vendredi</td>
+              <td>Français</td>
+              <td>SVT</td>
+              <td>Maths</td>
+              <td>Anglais</td>
+              <td>Projet</td>
+            </tr>
 
-    <h1>
-      💬 Discussions
-    </h1>
+          </tbody>
 
-    <p>
-      Échange avec ta classe et tes groupes.
-    </p>
+        </table>
 
-  </div>
-
-  <div class="grid-2">
-
-    <div class="card">
-
-      <h3>
-        Channels
-      </h3>
-
-      <div class="list"
-           id="channels">
       </div>
 
-    </div>
+    </section>
 
 
-    <div class="card chat">
+    <!-- DISCUSSIONS -->
 
-      <div class="messages"
-           id="messages">
-      </div>
+    <section
+      id="page-discussions"
+      class="page">
 
-      <div class="chat-input">
+      <div class="section-title">
 
-        <input id="messageInput"
-               placeholder="Écrire un message..."
-               onkeydown="if(event.key==='Enter')sendMessage()">
+        <h3>
+          💬 Discussions
+        </h3>
 
-        <button class="btn primary"
-                onclick="sendMessage()">
-          ➤
+        <button
+          class="primary"
+          onclick="openModal('discussionModal')">
+
+          + Nouvelle discussion
+
         </button>
 
       </div>
 
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     JEUX
-     ========================================================= -->
-
-<section class="page" id="games">
-
-  <div class="hero">
-
-    <h1>
-      🎮 Jouer ensemble
-    </h1>
-
-    <p>
-      Le multijoueur et la coopération sont au cœur de la classe.
-    </p>
-
-  </div>
-
-
-  <div class="grid-3">
-
-    <div class="card">
-      <div class="iconbox">⚔️</div>
-      <h3>Battle Maths</h3>
-      <p class="muted">
-        2 à 8 joueurs • temps réel
-      </p>
-      <button class="btn primary"
-              onclick="startGame('Battle Maths')">
-        Rejoindre
-      </button>
-    </div>
-
-
-    <div class="card">
-      <div class="iconbox">🧩</div>
-      <h3>Mission coopérative</h3>
-      <p class="muted">
-        Travaillez en équipe.
-      </p>
-      <button class="btn primary"
-              onclick="startGame('Mission coopérative')">
-        Rejoindre
-      </button>
-    </div>
-
-
-    <div class="card">
-      <div class="iconbox">🌍</div>
-      <h3>Battle Géographie</h3>
-      <p class="muted">
-        2 à 20 joueurs
-      </p>
-      <button class="btn primary"
-              onclick="startGame('Battle Géographie')">
-        Rejoindre
-      </button>
-    </div>
-
-
-    <div class="card">
-      <div class="iconbox">♟️</div>
-      <h3>Jeux de société</h3>
-      <p class="muted">
-        Organiser une partie réelle.
-      </p>
-      <button class="btn success"
-              onclick="createActivity('Jeux de société')">
-        Organiser
-      </button>
-    </div>
-
-
-    <div class="card">
-      <div class="iconbox">⚽</div>
-      <h3>Sport</h3>
-      <p class="muted">
-        Trouver des camarades.
-      </p>
-      <button class="btn success"
-              onclick="createActivity('Sport')">
-        Organiser
-      </button>
-    </div>
-
-
-    <div class="card">
-      <div class="iconbox">🏆</div>
-      <h3>Tournoi</h3>
-      <p class="muted">
-        Créer un tournoi d'équipe.
-      </p>
-      <button class="btn warning"
-              onclick="openTournament()">
-        Créer
-      </button>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     QUIZ
-     ========================================================= -->
-
-<section class="page" id="quizzes">
-
-  <div class="hero">
-
-    <h1>
-      🧠 Quiz
-    </h1>
-
-    <p>
-      Quiz individuels, par équipes ou en battle.
-    </p>
-
-  </div>
-
-  <div class="grid-3"
-       id="quizList">
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     BIBLIOTHÈQUE
-     ========================================================= -->
-
-<section class="page" id="library">
-
-  <div class="hero">
-
-    <h1>
-      📚 Bibliothèque
-    </h1>
-
-    <p>
-      Lire, découvrir, commenter et échanger des livres avec les camarades.
-    </p>
-
-  </div>
-
-
-  <div class="tabs">
-
-    <button class="active"
-            onclick="filterBooks('all',this)">
-      Tous
-    </button>
-
-    <button onclick="filterBooks('read',this)">
-      J'ai lu
-    </button>
-
-    <button onclick="filterBooks('exchange',this)">
-      À échanger
-    </button>
-
-    <button onclick="filterBooks('toread',this)">
-      À lire
-    </button>
-
-  </div>
-
-
-  <div class="grid-2"
-       id="bookList">
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     ACTIVITÉS
-     ========================================================= -->
-
-<section class="page" id="activities">
-
-  <div class="hero">
-
-    <h1>
-      🌳 Activités de la semaine
-    </h1>
-
-    <p>
-      L'application organise, les activités se vivent dans la vraie vie.
-    </p>
-
-  </div>
-
-  <div class="grid-2"
-       id="activityList">
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     GROUPES
-     ========================================================= -->
-
-<section class="page" id="groups">
-
-  <div class="hero">
-
-    <h1>
-      👥 Équipes & groupes
-    </h1>
-
-    <p>
-      Équipes stables pour les compétitions,
-      groupes temporaires pour les activités.
-    </p>
-
-  </div>
-
-
-  <div class="grid-2">
-
-    <div class="card">
-
-      <h3>
-        🏆 Mes équipes
-      </h3>
-
-      <div class="list"
-           id="teamList">
-      </div>
-
-    </div>
-
-
-    <div class="card">
-
-      <h3>
-        🤝 Mes groupes
-      </h3>
-
       <div class="list">
 
-        <div class="item">
-          <strong>
-            🎲 Les joueurs de Uno
-          </strong>
+        <div class="list-item">
+
+          <b>
+            📚 Devoirs de maths
+          </b>
 
           <div class="muted">
-            8 membres • prochaine partie samedi
+            Quels exercices faut-il préparer pour lundi ?
           </div>
+
         </div>
 
-        <div class="item">
-          <strong>
-            📚 Les lecteurs
-          </strong>
+        <div class="list-item">
+
+          <b>
+            ⚽ Match de vendredi
+          </b>
 
           <div class="muted">
-            7 membres • 31 livres lus
+            Qui souhaite participer ?
           </div>
+
         </div>
 
-        <button class="btn primary"
-                onclick="createGroup()">
-          + Créer un groupe
+        <div class="list-item">
+
+          <b>
+            🎲 Jeux de société
+          </b>
+
+          <div class="muted">
+            Propositions pour la prochaine sortie.
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- JEUX -->
+
+    <section
+      id="page-games"
+      class="page">
+
+      <div class="section-title">
+
+        <h3>
+          🎮 Jouer
+        </h3>
+
+        <button
+          class="primary"
+          onclick="openModal('gameModal')">
+
+          + Créer un jeu
+
         </button>
 
       </div>
 
-    </div>
+      <div class="grid">
 
-  </div>
+        <div class="card">
 
-</section>
+          <h3>
+            📝 Pendu
+          </h3>
 
+          <p class="muted">
+            Devinez le mot mystère.
+          </p>
 
-<!-- =========================================================
-     CHALLENGES
-     ========================================================= -->
+          <button class="secondary">
+            Jouer
+          </button>
 
-<section class="page" id="challenges">
-
-  <div class="hero">
-
-    <h1>
-      🏆 Challenges
-    </h1>
-
-    <p>
-      Pas de pression quotidienne :
-      des objectifs sur la semaine et le mois.
-    </p>
-
-  </div>
-
-
-  <div class="grid-2">
-
-    <div class="card">
-
-      <h3>
-        🎯 Challenge de la semaine
-      </h3>
-
-      <h2>
-        Jouons ensemble
-      </h2>
-
-      <p>
-        30 élèves participent à au moins une activité avec leurs camarades.
-      </p>
-
-      <div class="progress">
-        <span style="width:80%"></span>
-      </div>
-
-      <p>
-        <strong>
-          24 / 30
-        </strong>
-      </p>
-
-      <span class="chip">
-        +100 🪙 pour tous
-      </span>
-
-    </div>
-
-
-    <div class="card">
-
-      <h3>
-        🏆 Challenge du mois
-      </h3>
-
-      <h2>
-        Le mois de la lecture
-      </h2>
-
-      <p>
-        Objectif : 50 livres lus par la classe.
-      </p>
-
-      <div class="progress">
-        <span style="width:74%"></span>
-      </div>
-
-      <p>
-        <strong>
-          37 / 50
-        </strong>
-      </p>
-
-      <span class="chip">
-        🎉 Récompense collective
-      </span>
-
-    </div>
-
-  </div>
-
-
-  <div class="section-title">
-
-    <h2>
-      ➕ Challenges proposés
-    </h2>
-
-    <button class="btn primary"
-            onclick="openChallenge()">
-      Proposer
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     CLASSCOINS
-     ========================================================= -->
-
-<section class="page" id="coins">
-
-  <div class="hero">
-
-    <h1>
-      🪙 ClassCoins
-    </h1>
-
-    <p>
-      Une monnaie virtuelle pour valoriser la participation
-      et débloquer des récompenses.
-    </p>
-
-  </div>
-
-
-  <div class="grid">
-
-    <div class="card stat">
-      💰
-
-      <div class="num"
-           id="coinPageBalance">
-        850
-      </div>
-
-      <div class="muted">
-        Solde
-      </div>
-    </div>
-
-
-    <div class="card stat">
-      📖
-
-      <div class="num">
-        +50
-      </div>
-
-      <div class="muted">
-        Lecture
-      </div>
-    </div>
-
-
-    <div class="card stat">
-      🤝
-
-      <div class="num">
-        +30
-      </div>
-
-      <div class="muted">
-        Entraide
-      </div>
-    </div>
-
-
-    <div class="card stat">
-      🌳
-
-      <div class="num">
-        +30
-      </div>
-
-      <div class="muted">
-        Activité réelle
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="section-title">
-    <h2>
-      🛍️ Boutique
-    </h2>
-  </div>
-
-  <div class="grid-3"
-       id="shop">
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     COLLABORATION
-     ========================================================= -->
-
-<section class="page" id="collab">
-
-  <div class="hero">
-
-    <h1>
-      🤝 Collaboration
-    </h1>
-
-    <p>
-      Projets, groupes et tâches à réaliser ensemble.
-    </p>
-
-  </div>
-
-
-  <div class="grid-2">
-
-    <div class="card">
-
-      <h3>
-        📚 Projet Planètes
-      </h3>
-
-      <p class="muted">
-        Groupe de 4 • échéance 20 septembre
-      </p>
-
-      <div class="list">
-
-        <div class="item">
-          ☑️ Rechercher les planètes
         </div>
 
-        <div class="item">
-          ☐ Préparer l'affiche
+        <div class="card">
+
+          <h3>
+            🧩 Défi rapide
+          </h3>
+
+          <p class="muted">
+            Une minute pour répondre.
+          </p>
+
+          <button class="secondary">
+            Jouer
+          </button>
+
         </div>
 
-        <div class="item">
-          ☐ Répéter la présentation
+        <div class="card">
+
+          <h3>
+            🏁 Défi équipes
+          </h3>
+
+          <p class="muted">
+            Affrontez les autres groupes.
+          </p>
+
+          <button class="secondary">
+            Jouer
+          </button>
+
         </div>
 
       </div>
 
-    </div>
+    </section>
 
 
-    <div class="card">
+    <!-- QUIZ -->
 
-      <h3>
-        💡 Idées de la classe
-      </h3>
+    <section
+      id="page-quiz"
+      class="page">
 
-      <div class="list">
+      <div class="section-title">
 
-        <div class="item">
-          🏸 Organiser du badminton
-          <span class="chip">
-            18 👍
-          </span>
-        </div>
+        <h3>
+          🧠 Quiz
+        </h3>
 
-        <div class="item">
-          🎲 Après-midi jeux
-          <span class="chip">
-            24 👍
-          </span>
-        </div>
+        <button
+          class="primary"
+          onclick="openModal('quizModal')">
 
-      </div>
+          + Créer un quiz
 
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     DÉLÉGUÉS
-     ========================================================= -->
-
-<section class="page" id="delegates">
-
-  <div class="hero">
-
-    <h1>
-      👥 Espace délégués
-    </h1>
-
-    <p>
-      Chaque élève peut proposer une idée ou faire une demande.
-    </p>
-
-  </div>
-
-
-  <div class="grid-2">
-
-    <div class="card">
-
-      <h3>
-        📩 Mes demandes
-      </h3>
-
-      <div class="list"
-           id="requestList">
-      </div>
-
-      <button class="btn primary"
-              onclick="openRequest()">
-        + Nouvelle demande
-      </button>
-
-    </div>
-
-
-    <div class="card">
-
-      <h3>
-        📊 Sondages
-      </h3>
-
-      <div class="item">
-
-        <strong>
-          Quel jeu pour la prochaine activité ?
-        </strong>
-
-        <p>
-          🎲 Escape Game — 15
-        </p>
-
-        <p>
-          ⚽ Football — 8
-        </p>
-
-        <p>
-          🎮 Quiz Battle — 12
-        </p>
-
-        <button class="btn"
-                onclick="toast('Vote enregistré !')">
-          Voter
         </button>
 
       </div>
 
-    </div>
+      <div class="grid">
 
-  </div>
+        <div class="card">
 
-</section>
+          <span class="badge">
+            Mathématiques
+          </span>
 
+          <h3>
+            Fractions
+          </h3>
 
-<!-- =========================================================
-     ADMINISTRATION
-     ========================================================= -->
+          <p class="muted">
+            10 questions • 15 min
+          </p>
 
-<section class="page" id="admin">
+          <button class="secondary">
+            Commencer
+          </button>
 
-  <div class="hero">
+        </div>
 
-    <h1>
-      👑 Administration
-    </h1>
+        <div class="card">
 
-    <p>
-      Valider les comptes, gérer les rôles
-      et contrôler les liaisons parent-enfant.
-    </p>
+          <span class="badge green">
+            SVT
+          </span>
 
-  </div>
+          <h3>
+            Le vivant
+          </h3>
 
+          <p class="muted">
+            12 questions • 20 min
+          </p>
 
-  <div class="grid">
+          <button class="secondary">
+            Commencer
+          </button>
 
-    <div class="card stat">
-      👨‍🎓
-      <div class="num"
-           id="adminStudents">
-        0
-      </div>
-      <div class="muted">
-        Élèves
-      </div>
-    </div>
+        </div>
 
+        <div class="card">
 
-    <div class="card stat">
-      👩‍🏫
-      <div class="num"
-           id="adminTeachers">
-        0
-      </div>
-      <div class="muted">
-        Maîtres(ses)
-      </div>
-    </div>
+          <span class="badge orange">
+            Histoire
+          </span>
 
+          <h3>
+            Moyen Âge
+          </h3>
 
-    <div class="card stat">
-      👨‍👩‍👧
-      <div class="num"
-           id="adminParents">
-        0
-      </div>
-      <div class="muted">
-        Parents
-      </div>
-    </div>
+          <p class="muted">
+            8 questions • 10 min
+          </p>
 
+          <button class="secondary">
+            Commencer
+          </button>
 
-    <div class="card stat">
-      ⏳
-      <div class="num"
-           id="adminPending">
-        0
-      </div>
-      <div class="muted">
-        En attente
-      </div>
-    </div>
+        </div>
 
-  </div>
-
-
-  <div class="section-title">
-
-    <h2>
-      ⏳ Comptes en attente
-    </h2>
-
-    <button class="btn"
-            onclick="loadAdminData()">
-      ↻ Actualiser
-    </button>
-
-  </div>
-
-
-  <div class="card">
-
-    <div id="pendingUsers"
-         class="list">
-
-      <div class="muted">
-        Chargement...
       </div>
 
-    </div>
-
-  </div>
+    </section>
 
 
-  <div class="section-title">
+    <!-- BIBLIOTHEQUE -->
 
-    <h2>
-      👥 Utilisateurs
-    </h2>
+    <section
+      id="page-library"
+      class="page">
 
-  </div>
+      <div class="section-title">
 
+        <h3>
+          📚 Bibliothèque
+        </h3>
 
-  <div class="card">
+        <button
+          class="primary"
+          onclick="openModal('resourceModal')">
 
-    <div id="allUsers"
-         class="list">
+          + Ajouter un document
 
-      <div class="muted">
-        Chargement...
+        </button>
+
       </div>
 
-    </div>
+      <div class="grid">
 
-  </div>
+        <div class="card">
 
+          <h3>
+            📄 Fiches de révision
+          </h3>
 
-  <div class="section-title">
+          <p class="muted">
+            Documents partagés par les professeurs.
+          </p>
 
-    <h2>
-      👨‍👩‍👧 Liaisons parent-enfant
-    </h2>
+          <button class="secondary">
+            Consulter
+          </button>
 
-  </div>
+        </div>
 
+        <div class="card">
 
-  <div class="card">
+          <h3>
+            📖 Romans
+          </h3>
 
-    <div id="parentLinksAdmin"
-         class="list">
+          <p class="muted">
+            Sélection de lectures de la classe.
+          </p>
 
-      <div class="muted">
-        Chargement...
+          <button class="secondary">
+            Explorer
+          </button>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            🔗 Ressources web
+          </h3>
+
+          <p class="muted">
+            Sites et ressources recommandés.
+          </p>
+
+          <button class="secondary">
+            Explorer
+          </button>
+
+        </div>
+
       </div>
 
-    </div>
-
-  </div>
-
-</section>
+    </section>
 
 
-<!-- =========================================================
-     FAMILLE
-     ========================================================= -->
+    <!-- ACTIVITES -->
 
-<section class="page" id="family">
+    <section
+      id="page-activities"
+      class="page">
 
-  <div class="hero">
+      <div class="section-title">
 
-    <h1>
-      👨‍👩‍👧 Ma famille
-    </h1>
+        <h3>
+          🏃 Activités
+        </h3>
 
-    <p>
-      Voir les parents liés à ton compte
-      et signaler un problème.
-    </p>
+        <button
+          class="primary"
+          onclick="openModal('activityModal')">
 
-  </div>
+          + Proposer une activité
 
+        </button>
 
-  <div class="card">
-
-    <h3>
-      Parents liés
-    </h3>
-
-    <div id="familyList"
-         class="list">
-
-      <div class="muted">
-        Chargement...
       </div>
 
-    </div>
+      <div class="grid">
 
-  </div>
+        <div class="card">
 
+          <span class="badge green">
+            Vendredi
+          </span>
 
-  <div class="section-title">
+          <h3>
+            ⚽ Football
+          </h3>
 
-    <h2>
-      ⚠️ Signaler un problème
-    </h2>
+          <p class="muted">
+            Terrain municipal • 16h30
+          </p>
 
-  </div>
+          <button class="secondary">
+            Participer
+          </button>
 
+        </div>
 
-  <div class="card">
+        <div class="card">
 
-    <div class="form">
+          <span class="badge">
+            Samedi
+          </span>
 
-      <label>
-        Parent concerné
+          <h3>
+            🎲 Jeux de société
+          </h3>
 
-        <select id="reportParent"
-                class="input">
-        </select>
+          <p class="muted">
+            Maison des jeunes • 14h
+          </p>
 
-      </label>
+          <button class="secondary">
+            Participer
+          </button>
 
+        </div>
 
-      <label>
-        Motif
+        <div class="card">
 
-        <select id="reportReason"
-                class="input">
+          <span class="badge orange">
+            Dimanche
+          </span>
 
-          <option>
-            Je ne connais pas cette personne
-          </option>
+          <h3>
+            🚶 Randonnée
+          </h3>
 
-          <option>
-            Cette personne n'est pas mon parent
-          </option>
+          <p class="muted">
+            Sortie découverte • 09h
+          </p>
 
-          <option>
-            Mauvais compte associé
-          </option>
+          <button class="secondary">
+            Participer
+          </button>
 
-          <option>
-            Autre
-          </option>
+        </div>
 
-        </select>
-
-      </label>
-
-
-      <label>
-        Précisions
-
-        <textarea id="reportDetails"
-                  placeholder="Explique le problème..."></textarea>
-
-      </label>
-
-
-      <button class="btn danger"
-              onclick="reportParentIssue()">
-        ⚠️ Envoyer le signalement
-      </button>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     ESPACE PROFESSEUR
-     ========================================================= -->
-
-<section class="page" id="teacher">
-
-  <div class="hero">
-
-    <h1>
-      👨‍🏫 Espace professeur
-    </h1>
-
-    <p>
-      Créer du contenu, gérer les ClassCoins,
-      les équipes et les activités.
-    </p>
-
-  </div>
-
-
-  <div class="grid-3">
-
-    <div class="card">
-
-      <div class="iconbox">
-        🪙
       </div>
 
-      <h3>
-        Attribuer des ClassCoins
-      </h3>
-
-      <p class="muted">
-        À un élève, groupe, équipe ou toute la classe.
-      </p>
-
-      <button class="btn primary"
-              onclick="openCoinsModal()">
-        Attribuer
-      </button>
-
-    </div>
+    </section>
 
 
-    <div class="card">
+    <!-- EQUIPES -->
 
-      <div class="iconbox">
-        🎯
+    <section
+      id="page-teams"
+      class="page">
+
+      <div class="section-title">
+
+        <h3>
+          👥 Équipes & groupes
+        </h3>
+
+        <button
+          class="primary"
+          onclick="openModal('teamModal')">
+
+          + Créer une équipe
+
+        </button>
+
       </div>
 
-      <h3>
-        Créer un challenge
-      </h3>
+      <div class="grid">
 
-      <button class="btn primary"
-              onclick="openChallenge()">
-        Créer
-      </button>
+        <div class="card">
 
-    </div>
+          <h3>
+            🔵 Les Explorateurs
+          </h3>
 
+          <p class="muted">
+            6 membres • 420 points
+          </p>
 
-    <div class="card">
+        </div>
 
-      <div class="iconbox">
-        🧠
+        <div class="card">
+
+          <h3>
+            🟢 Les Scientifiques
+          </h3>
+
+          <p class="muted">
+            5 membres • 390 points
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            🟠 Les Champions
+          </h3>
+
+          <p class="muted">
+            6 membres • 365 points
+          </p>
+
+        </div>
+
       </div>
 
-      <h3>
-        Créer un quiz
-      </h3>
-
-      <button class="btn primary"
-              onclick="openQuizBuilder()">
-        Créer
-      </button>
-
-    </div>
+    </section>
 
 
-    <div class="card">
+    <!-- CHALLENGES -->
 
-      <div class="iconbox">
-        📄
+    <section
+      id="page-challenges"
+      class="page">
+
+      <div class="section-title">
+
+        <h3>
+          🏆 Challenges
+        </h3>
+
+        <button
+          class="primary role-teacher role-admin"
+          onclick="openModal('challengeModal')">
+
+          + Nouveau challenge
+
+        </button>
+
       </div>
 
-      <h3>
-        Ajouter un document
-      </h3>
+      <div class="grid">
 
-      <button class="btn primary"
-              onclick="openDocument()">
-        Ajouter
-      </button>
+        <div class="card">
 
-    </div>
+          <span class="badge green">
+            Actif
+          </span>
 
+          <h3>
+            📚 Lecture
+          </h3>
 
-    <div class="card">
+          <p class="muted">
+            Lire 20 pages cette semaine.
+          </p>
 
-      <div class="iconbox">
-        🎮
+          <b>
+            +30 ClassCoins
+          </b>
+
+        </div>
+
+        <div class="card">
+
+          <span class="badge green">
+            Actif
+          </span>
+
+          <h3>
+            🧮 Maths
+          </h3>
+
+          <p class="muted">
+            Réussir 10 exercices.
+          </p>
+
+          <b>
+            +25 ClassCoins
+          </b>
+
+        </div>
+
+        <div class="card">
+
+          <span class="badge">
+            Équipe
+          </span>
+
+          <h3>
+            ♻️ Éco-classe
+          </h3>
+
+          <p class="muted">
+            Projet collectif de recyclage.
+          </p>
+
+          <b>
+            +50 ClassCoins
+          </b>
+
+        </div>
+
       </div>
 
-      <h3>
-        Créer un jeu
-      </h3>
-
-      <button class="btn primary"
-              onclick="openGameBuilder()">
-        Créer
-      </button>
-
-    </div>
+    </section>
 
 
-    <div class="card">
+    <!-- CLASSCOINS -->
 
-      <div class="iconbox">
-        📝
+    <section
+      id="page-coins"
+      class="page">
+
+      <div class="hero">
+
+        <h1>
+          🪙 ClassCoins
+        </h1>
+
+        <p>
+          Un système de récompense pour valoriser
+          l'engagement, l'entraide et les projets.
+        </p>
+
+        <div
+          class="stat"
+          id="coinsBig">
+
+          0 🪙
+
+        </div>
+
       </div>
 
-      <h3>
-        Créer une ressource
-      </h3>
+      <div class="card">
 
-      <button class="btn primary"
-              onclick="openContentBuilder()">
-        Éditer
-      </button>
+        <h3>
+          Historique
+        </h3>
 
-    </div>
+        <div class="list">
 
-  </div>
+          <div class="list-item">
+            🏆 Challenge lecture
+            <b>+30</b>
+          </div>
+
+          <div class="list-item">
+            🤝 Aide à un camarade
+            <b>+10</b>
+          </div>
+
+          <div class="list-item">
+            ⭐ Participation active
+            <b>+15</b>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
 
 
-  <div class="section-title">
+    <!-- COLLABORATION -->
 
-    <h2>
-      📊 Vue classe
-    </h2>
+    <section
+      id="page-collaboration"
+      class="page">
 
-  </div>
+      <div class="section-title">
+
+        <h3>
+          🤝 Collaboration
+        </h3>
+
+        <button
+          class="primary"
+          onclick="openModal('collabModal')">
+
+          + Nouveau projet
+
+        </button>
+
+      </div>
+
+      <div class="grid">
+
+        <div class="card">
+
+          <h3>
+            🌍 Projet environnement
+          </h3>
+
+          <p class="muted">
+            Travail collaboratif par équipes.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            🎨 Journal de classe
+          </h3>
+
+          <p class="muted">
+            Création collective.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            💡 Boîte à idées
+          </h3>
+
+          <p class="muted">
+            Propositions des élèves.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
 
 
-  <div class="grid-3">
+    <!-- DELEGUES -->
 
-    <div class="card">
-      <strong>
-        28 / 30
-      </strong>
-      <p class="muted">
-        Élèves actifs cette semaine
-      </p>
-    </div>
+    <section
+      id="page-delegates"
+      class="page">
 
-    <div class="card">
-      <strong>
-        124
-      </strong>
-      <p class="muted">
-        Activités réalisées
-      </p>
-    </div>
+      <div class="section-title">
 
-    <div class="card">
-      <strong>
-        187
-      </strong>
-      <p class="muted">
-        Livres lus cette année
-      </p>
-    </div>
+        <h3>
+          🗳️ Délégués
+        </h3>
 
-  </div>
+        <button
+          class="primary role-admin role-teacher"
+          onclick="openModal('delegateModal')">
 
-</section>
+          + Ajouter
 
-</main>
+        </button>
+
+      </div>
+
+      <div class="grid-2">
+
+        <div class="card">
+
+          <h3>
+            👤 Délégué titulaire
+          </h3>
+
+          <p class="muted">
+            À désigner par la classe.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            👤 Suppléant
+          </h3>
+
+          <p class="muted">
+            À désigner par la classe.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- FAMILLE -->
+
+    <section
+      id="page-family"
+      class="page">
+
+      <div class="card">
+
+        <h3>
+          👨‍👩‍👧 Ma famille
+        </h3>
+
+        <p class="muted">
+          Cet espace permet aux parents de suivre
+          les activités, challenges et informations
+          de leur enfant.
+        </p>
+
+        <div class="list">
+
+          <div class="list-item">
+
+            <b>
+              Enfant lié
+            </b>
+
+            <div
+              id="familyChild"
+              class="muted">
+
+              Lien en attente de validation.
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PROFESSEUR -->
+
+    <section
+      id="page-teacher"
+      class="page">
+
+      <div class="section-title">
+
+        <h3>
+          👨‍🏫 Espace professeur
+        </h3>
+
+        <button
+          class="primary"
+          onclick="openModal('teacherContentModal')">
+
+          + Créer du contenu
+
+        </button>
+
+      </div>
+
+      <div class="grid">
+
+        <div class="card">
+
+          <h3>
+            📝 Quiz
+          </h3>
+
+          <p class="muted">
+            Créer et publier des quiz.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            📄 Documents
+          </h3>
+
+          <p class="muted">
+            Partager des ressources.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            🏆 Challenges
+          </h3>
+
+          <p class="muted">
+            Créer des défis et attribuer
+            des ClassCoins.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ADMINISTRATION -->
+
+    <section
+      id="page-admin"
+      class="page">
+
+      <div class="section-title">
+
+        <h3>
+          ⚙️ Administration
+        </h3>
+
+      </div>
+
+      <div class="grid">
+
+        <div class="card">
+
+          <div class="muted">
+            Utilisateurs
+          </div>
+
+          <div class="stat">
+            —
+          </div>
+
+          <p class="muted">
+            Les profils Firestore sont stockés
+            dans <b>users</b>.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <div class="muted">
+            Classe
+          </div>
+
+          <div class="stat">
+            6ème
+          </div>
+
+          <p class="muted">
+            Gestion de la classe et des rôles.
+          </p>
+
+        </div>
+
+        <div class="card">
+
+          <div class="muted">
+            Firebase
+          </div>
+
+          <div class="stat">
+            🟢
+          </div>
+
+          <p class="muted">
+            Authentication + Firestore
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
 </div>
 
 
 <!-- =========================================================
      MODAL
-     ========================================================= -->
+========================================================= -->
 
-<div class="modal"
-     id="modal">
+<div
+  id="modal"
+  class="modal"
+  onclick="if(event.target===this)closeModal()">
 
   <div class="modal-box">
 
     <div class="modal-head">
 
       <h2 id="modalTitle">
-        Titre
+        Créer
       </h2>
 
-      <button class="close"
-              onclick="closeModal()">
-        ✕
+      <button
+        class="close"
+        onclick="closeModal()">
+
+        ×
+
       </button>
 
     </div>
 
-    <div id="modalBody"></div>
+    <div id="modalContent"></div>
 
   </div>
 
 </div>
 
 
-<div class="toast"
-     id="toast">
-</div>
+<!-- =========================================================
+     FIREBASE + APPLICATION
+========================================================= -->
 
-
-<script>
-
-/* =========================================================
-   FIREBASE V3
-   =========================================================
-
-   Projet Firebase :
-   ma-classe-6eme-2bc24
-
-   IMPORTANT :
-   - Authentication Email/Password doit être activée.
-   - Firestore doit être créé.
-   - Les règles Firestore doivent autoriser les opérations
-     correspondant à ton modèle de sécurité.
-
-   ========================================================= */
-
+<script type="module">
 
 /* =========================================================
-   CONFIGURATION FIREBASE V3
-   ========================================================= */
+   CONFIGURATION FIREBASE
+   IMPORTANT : ne pas modifier les caractères de cette config
+========================================================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCR-_BSQ2I2bZgpVN0-p7NnoxR0BdjCohQ",
-  authDomain: "ma-classe-6eme-2bc24.firebaseapp.com",
-  projectId: "ma-classe-6eme-2bc24",
-  storageBucket: "ma-classe-6eme-2bc24.firebasestorage.app",
-  messagingSenderId: "889834099455",
-  appId: "1:889834099455:web:9a29b59808ad4b988bf2ca"
-};
 
+  apiKey:
+    "AIzaSyCR-_BSQ2I2bZgpVN0-p7NnoxR0BdjCohQ",
 
-/* =========================================================
-   DONNÉES DE DÉMONSTRATION
-   ========================================================= */
+  authDomain:
+    "ma-classe-6eme-2bc24.firebaseapp.com",
 
-let state = {
+  projectId:
+    "ma-classe-6eme-2bc24",
 
-  coins: 850,
+  storageBucket:
+    "ma-classe-6eme-2bc24.firebasestorage.app",
 
-  user: "Adam",
+  messagingSenderId:
+    "889834099455",
 
-  currentChannel: "Annonces",
-
-  books: [
-
-    {
-      id:1,
-      title:"Le Petit Prince",
-      author:"Antoine de Saint-Exupéry",
-      rating:4.8,
-      read:true,
-      exchange:true,
-      emoji:"📕",
-      reviews:12
-    },
-
-    {
-      id:2,
-      title:"Harry Potter à l'école des sorciers",
-      author:"J. K. Rowling",
-      rating:4.7,
-      read:true,
-      exchange:false,
-      emoji:"🪄",
-      reviews:14
-    },
-
-    {
-      id:3,
-      title:"Matilda",
-      author:"Roald Dahl",
-      rating:4.6,
-      read:false,
-      exchange:false,
-      emoji:"📗",
-      reviews:8
-    },
-
-    {
-      id:4,
-      title:"Astérix",
-      author:"René Goscinny",
-      rating:4.5,
-      read:true,
-      exchange:true,
-      emoji:"🛡️",
-      reviews:10
-    }
-
-  ],
-
-  activities: [
-
-    {
-      icon:"🎲",
-      title:"Jeux de société",
-      date:"Samedi • 15:00",
-      place:"Chez Sarah",
-      people:"6 / 8",
-      joined:false
-    },
-
-    {
-      icon:"⚽",
-      title:"Football",
-      date:"Dimanche • 10:00",
-      place:"Terrain municipal",
-      people:"8 / 12",
-      joined:false
-    },
-
-    {
-      icon:"🏸",
-      title:"Badminton",
-      date:"Samedi • 16:00",
-      place:"Gymnase",
-      people:"4 / 8",
-      joined:false
-    },
-
-    {
-      icon:"📚",
-      title:"Sortie bibliothèque",
-      date:"Mercredi • 14:00",
-      place:"Bibliothèque municipale",
-      people:"3 / 8",
-      joined:false
-    }
-
-  ],
-
-  requests: [
-
-    "Organiser un tournoi de football",
-    "Ajouter des livres à la bibliothèque"
-
-  ],
-
-  teams: [
-
-    {
-      name:"🔵 Team Newton",
-      members:4,
-      points:2850
-    },
-
-    {
-      name:"🟢 Team Curie",
-      members:4,
-      points:2760
-    },
-
-    {
-      name:"🟠 Team Pasteur",
-      members:4,
-      points:2510
-    }
-
-  ]
+  appId:
+    "1:889834099455:web:9a29b59808ad4b988bf2ca"
 
 };
 
 
 /* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-const navNames = {
-
-  home:"Accueil",
-  schedule:"Emploi du temps",
-  discussions:"Discussions",
-  games:"Jouer",
-  quizzes:"Quiz",
-  library:"Bibliothèque",
-  activities:"Activités",
-  groups:"Équipes & groupes",
-  challenges:"Challenges",
-  coins:"ClassCoins",
-  collab:"Collaboration",
-  delegates:"Délégués",
-  teacher:"Espace professeur",
-  admin:"Administration",
-  family:"Ma famille"
-
-};
-
-
-document.querySelectorAll(".nav button")
-.forEach(button => {
-
-  if(button.dataset.page){
-
-    button.onclick = () =>
-      showPage(button.dataset.page);
-
-  }
-
-});
-
-
-function showPage(id){
-
-  if(!currentProfile){
-
-    return;
-
-  }
-
-
-  if(
-    id==="admin" &&
-    currentProfile.role!=="admin"
-  ){
-
-    return toast(
-      "Accès réservé à l'administrateur."
-    );
-
-  }
-
-
-  if(
-    id==="teacher" &&
-    !["admin","teacher"].includes(
-      currentProfile.role
-    )
-  ){
-
-    return toast(
-      "Accès réservé aux maîtres(ses)."
-    );
-
-  }
-
-
-  if(
-    id==="family" &&
-    currentProfile.role!=="eleve"
-  ){
-
-    return toast(
-      "Cette rubrique est réservée aux élèves."
-    );
-
-  }
-
-
-  document
-    .querySelectorAll(".page")
-    .forEach(page =>
-      page.classList.remove("active")
-    );
-
-
-  const page =
-    document.getElementById(id);
-
-  if(!page){
-
-    return;
-
-  }
-
-
-  page.classList.add("active");
-
-
-  document
-    .querySelectorAll(".nav button")
-    .forEach(button =>
-      button.classList.toggle(
-        "active",
-        button.dataset.page===id
-      )
-    );
-
-
-  document.getElementById(
-    "pageTitle"
-  ).textContent =
-    navNames[id] || id;
-
-
-  document
-    .getElementById("sidebar")
-    .classList.remove("open");
-
-
-  if(id==="library")
-    renderBooks();
-
-  if(id==="activities")
-    renderActivities();
-
-  if(id==="admin")
-    loadAdminData();
-
-  if(id==="family")
-    loadFamily();
-
-}
-
-
-function toggleSidebar(){
-
-  document
-    .getElementById("sidebar")
-    .classList.toggle("open");
-
-}
-
-
-function toast(message){
-
-  const element =
-    document.getElementById("toast");
-
-  element.textContent = message;
-
-  element.classList.add("show");
-
-  setTimeout(
-    () =>
-      element.classList.remove("show"),
-    2200
-  );
-
-}
-
-
-function openModal(title,body){
-
-  document.getElementById(
-    "modalTitle"
-  ).textContent = title;
-
-  document.getElementById(
-    "modalBody"
-  ).innerHTML = body;
-
-  document
-    .getElementById("modal")
-    .classList.add("show");
-
-}
-
-
-function closeModal(){
-
-  document
-    .getElementById("modal")
-    .classList.remove("show");
-
-}
-
-
-/* =========================================================
-   ACCUEIL
-   ========================================================= */
-
-function renderTop5(){
-
-  const names = [
-
-    ["🥇","Sarah",1020],
-    ["🥈","Yassine",960],
-    ["🥉","Lina",910],
-    ["4","Adam",850],
-    ["5","Nour",820]
-
-  ];
-
-
-  document.getElementById("top5").innerHTML =
-
-    names.map(item => `
-
-      <div class="rank">
-
-        <div class="rankpos">
-          ${item[0]}
-        </div>
-
-        <div>
-          <strong>
-            ${item[1]}
-          </strong>
-        </div>
-
-        <div class="coin">
-          ${item[2]} 🪙
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-/* =========================================================
-   CALENDRIER
-   ========================================================= */
-
-function renderCalendar(){
-
-  const days = [
-    "Lun",
-    "Mar",
-    "Mer",
-    "Jeu",
-    "Ven",
-    "Sam",
-    "Dim"
-  ];
-
-
-  const lessons = [
-
-    ["Maths","Français"],
-    ["Histoire","Maths"],
-    ["Sciences","Anglais"],
-    ["Français","Sport"],
-    ["Maths","Sciences"],
-    ["🎲 Activité",""],
-    ["⚽ Sport",""]
-
-  ];
-
-
-  document.getElementById(
-    "calendar"
-  ).innerHTML =
-
-    days.map((day,index) => `
-
-      <div class="day">
-
-        <strong>
-          ${day}
-        </strong>
-
-        ${lessons[index]
-          .filter(Boolean)
-          .map(lesson => `
-
-            <div class="lesson">
-              ${lesson}
-            </div>
-
-          `)
-          .join("")}
-
-      </div>
-
-    `).join("");
-
-}
-
-
-/* =========================================================
-   DISCUSSIONS
-   ========================================================= */
-
-function renderChannels(){
-
-  const channels = [
-
-    "📢 Annonces",
-    "📚 Devoirs",
-    "🧮 Maths",
-    "🇫🇷 Français",
-    "🔬 Sciences",
-    "🎮 Jeux",
-    "⚽ Sport",
-    "💡 Idées"
-
-  ];
-
-
-  document.getElementById(
-    "channels"
-  ).innerHTML =
-
-    channels.map(channel => `
-
-      <button
-        class="btn ${
-          channel==="📢 Annonces"
-            ? "primary"
-            : ""
-        }"
-        style="text-align:left"
-        onclick="selectChannel('${channel}')">
-
-        ${channel}
-
-      </button>
-
-    `).join("");
-
-
-  document.getElementById(
-    "messages"
-  ).innerHTML = `
-
-    <div class="msg">
-
-      <strong>
-        Sarah
-      </strong>
-
-      <br>
-
-      Quelqu'un vient aux jeux de société samedi ?
-
-    </div>
-
-
-    <div class="msg me">
-
-      <strong>
-        Adam
-      </strong>
-
-      <br>
-
-      Oui, je participe ! 🎲
-
-    </div>
-
-
-    <div class="msg">
-
-      <strong>
-        Yassine
-      </strong>
-
-      <br>
-
-      Moi aussi 👍
-
-    </div>
-
-  `;
-
-}
-
-
-function selectChannel(channel){
-
-  state.currentChannel = channel;
-
-  toast(
-    "Channel : " + channel
-  );
-
-}
-
-
-function sendMessage(){
-
-  const input =
-    document.getElementById(
-      "messageInput"
-    );
-
-
-  const value =
-    input.value.trim();
-
-
-  if(!value)
-    return;
-
-
-  document
-    .getElementById("messages")
-    .insertAdjacentHTML(
-
-      "beforeend",
-
-      `
-
-      <div class="msg me">
-
-        <strong>
-          ${escapeHtml(
-            currentProfile?.displayName ||
-            currentProfile?.login ||
-            "Moi"
-          )}
-        </strong>
-
-        <br>
-
-        ${escapeHtml(value)}
-
-      </div>
-
-      `
-
-    );
-
-
-  input.value = "";
-
-
-  document.getElementById(
-    "messages"
-  ).scrollTop = 99999;
-
-}
-
-
-function escapeHtml(value){
-
-  return String(value || "")
-    .replace(
-      /[&<>"']/g,
-      character => ({
-
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-
-      }[character])
-
-    );
-
-}
-
-
-/* =========================================================
-   BIBLIOTHÈQUE
-   ========================================================= */
-
-function renderBooks(filter="all"){
-
-  const books =
-    state.books.filter(book =>
-
-      filter==="all" ||
-
-      (
-        filter==="read" &&
-        book.read
-      ) ||
-
-      (
-        filter==="exchange" &&
-        book.exchange
-      ) ||
-
-      (
-        filter==="toread" &&
-        !book.read
-      )
-
-    );
-
-
-  document.getElementById(
-    "bookList"
-  ).innerHTML =
-
-    books.map(book => `
-
-      <div class="card">
-
-        <div class="book">
-
-          <div class="cover">
-            ${book.emoji}
-          </div>
-
-          <div style="flex:1">
-
-            <h3>
-              ${escapeHtml(book.title)}
-            </h3>
-
-            <div class="muted">
-              ${escapeHtml(book.author)}
-            </div>
-
-            <div class="stars">
-
-              ★★★★★
-
-              <span class="muted">
-                ${book.rating}/5 •
-                ${book.reviews} avis
-              </span>
-
-            </div>
-
-
-            <div
-              class="chips"
-              style="margin:8px 0">
-
-              ${
-                book.read
-                  ? `<span class="chip">
-                       📖 Lu
-                     </span>`
-                  : ""
-              }
-
-              ${
-                book.exchange
-                  ? `<span class="chip">
-                       🔄 À échanger
-                     </span>`
-                  : ""
-              }
-
-            </div>
-
-
-            <button
-              class="btn small"
-              onclick="bookDetails(${book.id})">
-
-              Voir le livre
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-function filterBooks(filter,element){
-
-  document
-    .querySelectorAll(
-      "#library .tabs button"
-    )
-    .forEach(button =>
-      button.classList.remove("active")
-    );
-
-
-  element.classList.add("active");
-
-  renderBooks(filter);
-
-}
-
-
-function bookDetails(id){
-
-  const book =
-    state.books.find(
-      item => item.id===id
-    );
-
-
-  if(!book)
-    return;
-
-
-  openModal(
-
-    "📚 " + book.title,
-
-    `
-
-    <div class="book">
-
-      <div class="cover">
-        ${book.emoji}
-      </div>
-
-      <div>
-
-        <h3>
-          ${escapeHtml(book.author)}
-        </h3>
-
-        <div class="stars">
-          ★★★★★ ${book.rating}/5
-        </div>
-
-        <p>
-          👥 ${book.reviews}
-          élèves ont donné leur avis.
-        </p>
-
-      </div>
-
-    </div>
-
-    <hr>
-
-    <h3>
-      💬 Avis des élèves
-    </h3>
-
-    <div class="item">
-
-      <strong>
-        Sarah ⭐⭐⭐⭐⭐
-      </strong>
-
-      <p>
-        Une histoire que je recommande !
-      </p>
-
-    </div>
-
-    <div class="item">
-
-      <strong>
-        Yassine ⭐⭐⭐⭐
-      </strong>
-
-      <p>
-        Très bon livre.
-      </p>
-
-    </div>
-
-    <br>
-
-    <button
-      class="btn primary"
-      onclick="addReview()">
-
-      Ajouter mon avis
-
-    </button>
-
-    ${
-      book.exchange
-        ? `
-
-          <button
-            class="btn success"
-            style="margin-left:8px"
-            onclick="toast('Demande d’échange envoyée !')">
-
-            Demander un échange
-
-          </button>
-
-          `
-        : ""
-    }
-
-    `
-
-  );
-
-}
-
-
-function addReview(){
-
-  closeModal();
-
-
-  openModal(
-
-    "Ajouter un avis",
-
-    `
-
-    <div class="form">
-
-      <label>
-
-        Note
-
-        <select>
-          <option>5</option>
-          <option>4</option>
-          <option>3</option>
-          <option>2</option>
-          <option>1</option>
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Commentaire
-
-        <textarea
-          placeholder="Ton avis sur le livre..."></textarea>
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          state.coins+=10;
-          syncCoins();
-          toast('Avis publié ! +10 🪙')
-        ">
-
-        Publier
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-/* =========================================================
-   ACTIVITÉS
-   ========================================================= */
-
-function renderActivities(){
-
-  document.getElementById(
-    "activityList"
-  ).innerHTML =
-
-    state.activities.map(
-      (activity,index) => `
-
-      <div class="card">
-
-        <div class="row">
-
-          <div>
-
-            <div class="iconbox">
-              ${activity.icon}
-            </div>
-
-            <h3>
-              ${escapeHtml(activity.title)}
-            </h3>
-
-            <p>
-              ${escapeHtml(activity.date)}
-              <br>
-              📍 ${escapeHtml(activity.place)}
-            </p>
-
-            <span class="chip">
-              👥 ${escapeHtml(activity.people)}
-            </span>
-
-          </div>
-
-
-          <button
-            class="btn ${
-              activity.joined
-                ? "success"
-                : "primary"
-            }"
-            onclick="joinActivity(${index})">
-
-            ${
-              activity.joined
-                ? "✓ Je participe"
-                : "Je participe"
-            }
-
-          </button>
-
-        </div>
-
-      </div>
-
-      `
-    ).join("");
-
-}
-
-
-function joinActivity(index=0){
-
-  if(!state.activities[index])
-    return;
-
-
-  if(state.activities[index].joined){
-
-    return toast(
-      "Tu participes déjà à cette activité."
-    );
-
-  }
-
-
-  state.activities[index].joined = true;
-
-
-  let parts =
-    state.activities[index]
-      .people
-      .split("/");
-
-
-  parts[0] =
-    Number(parts[0]) + 1;
-
-
-  state.activities[index].people =
-    parts.join(" / ");
-
-
-  state.coins += 30;
-
-
-  syncCoins();
-
-  renderActivities();
-
-
-  toast(
-    "Participation enregistrée ! +30 🪙"
-  );
-
-}
-
-
-function createActivity(type){
-
-  openModal(
-
-    "🌳 Organiser une activité",
-
-    `
-
-    <div class="form">
-
-      <label>
-        Activité
-        <input
-          class="input"
-          value="${escapeHtml(type)}">
-      </label>
-
-      <label>
-        Date
-        <input
-          type="date"
-          class="input">
-      </label>
-
-      <label>
-        Heure
-        <input
-          type="time"
-          class="input">
-      </label>
-
-      <label>
-        Lieu
-        <input
-          class="input"
-          placeholder="Lieu de rendez-vous">
-      </label>
-
-      <label>
-        Nombre de participants
-        <input
-          type="number"
-          class="input"
-          value="8">
-      </label>
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Activité créée ! Les camarades peuvent maintenant la rejoindre.')
-        ">
-
-        Publier
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-/* =========================================================
-   GROUPES
-   ========================================================= */
-
-function renderTeams(){
-
-  document.getElementById(
-    "teamList"
-  ).innerHTML =
-
-    state.teams.map(
-      team => `
-
-      <div class="item">
-
-        <div class="row">
-
-          <strong>
-            ${escapeHtml(team.name)}
-          </strong>
-
-          <span class="coin">
-            ${team.points} XP
-          </span>
-
-        </div>
-
-        <div class="muted">
-          ${team.members} membres
-        </div>
-
-      </div>
-
-      `
-    ).join("");
-
-}
-
-
-function createGroup(){
-
-  openModal(
-
-    "👥 Créer un groupe",
-
-    `
-
-    <div class="form">
-
-      <label>
-        Nom
-        <input
-          class="input"
-          placeholder="Les joueurs de...">
-      </label>
-
-      <label>
-        Activité
-
-        <select class="input">
-
-          <option>
-            Jeu de société
-          </option>
-
-          <option>
-            Sport
-          </option>
-
-          <option>
-            Projet
-          </option>
-
-          <option>
-            Lecture
-          </option>
-
-        </select>
-
-      </label>
-
-      <label>
-        Visibilité
-
-        <select class="input">
-
-          <option>
-            Classe
-          </option>
-
-          <option>
-            Mes amis
-          </option>
-
-        </select>
-
-      </label>
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Groupe créé !')
-        ">
-
-        Créer
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-/* =========================================================
-   QUIZ
-   ========================================================= */
-
-function renderQuizzes(){
-
-  const quizzes = [
-
-    [
-      "🧮",
-      "Défi fractions",
-      "Mathématiques",
-      "10 questions",
-      "+100 🪙"
-    ],
-
-    [
-      "🔬",
-      "Les états de la matière",
-      "Sciences",
-      "8 questions",
-      "+80 🪙"
-    ],
-
-    [
-      "🌍",
-      "Capitales du monde",
-      "Géographie",
-      "12 questions",
-      "+120 🪙"
-    ],
-
-    [
-      "🇫🇷",
-      "Conjugaison",
-      "Français",
-      "10 questions",
-      "+100 🪙"
-    ]
-
-  ];
-
-
-  document.getElementById(
-    "quizList"
-  ).innerHTML =
-
-    quizzes.map(quiz => `
-
-      <div class="card">
-
-        <div class="iconbox">
-          ${quiz[0]}
-        </div>
-
-        <h3>
-          ${quiz[1]}
-        </h3>
-
-        <p class="muted">
-          ${quiz[2]} • ${quiz[3]}
-        </p>
-
-        <span class="chip">
-          ${quiz[4]}
-        </span>
-
-        <br>
-        <br>
-
-        <button
-          class="btn primary"
-          onclick="launchQuiz('${quiz[1]}')">
-
-          Jouer
-
-        </button>
-
-        <button
-          class="btn"
-          onclick="startGame('${quiz[1]} Battle')">
-
-          👥 Multijoueur
-
-        </button>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-function launchQuiz(title){
-
-  openModal(
-
-    "🧠 " + title,
-
-    `
-
-    <p>
-      Question 1 / 5
-    </p>
-
-    <h3>
-      Quel résultat est correct ?
-    </h3>
-
-    <div class="quiz-option">
-      ○ 12
-    </div>
-
-    <div class="quiz-option">
-      ○ 18
-    </div>
-
-    <div class="quiz-option">
-      ○ 24
-    </div>
-
-    <div class="quiz-option">
-      ○ 36
-    </div>
-
-    <button
-      class="btn primary"
-      onclick="
-        closeModal();
-        state.coins+=20;
-        syncCoins();
-        toast('Réponse enregistrée ! +20 🪙')
-      ">
-
-      Valider
-
-    </button>
-
-    `
-
-  );
-
-}
-
-
-/* =========================================================
-   JEUX
-   ========================================================= */
-
-function startGame(name){
-
-  openModal(
-
-    "🎮 " + escapeHtml(name),
-
-    `
-
-    <div class="card">
-
-      <h3>
-        Salon multijoueur
-      </h3>
-
-      <p>
-        👥 Joueurs connectés : 4
-      </p>
-
-      <div class="list">
-
-        <div class="item">
-          🔵 Adam — prêt
-        </div>
-
-        <div class="item">
-          🟢 Sarah — prêt
-        </div>
-
-        <div class="item">
-          🟠 Yassine — prêt
-        </div>
-
-        <div class="item">
-          🟣 Lina — prêt
-        </div>
-
-      </div>
-
-      <br>
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('La partie commence !')
-        ">
-
-        🚀 Lancer la partie
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-/* =========================================================
-   CLASSCOINS
-   ========================================================= */
-
-function renderShop(){
-
-  const items = [
-
-    ["📕","Livre au choix",500],
-    ["🎨","Avatar spécial",200],
-    ["🏅","Badge légendaire",300],
-    ["🎟️","Choisir le prochain jeu",400],
-    ["🎲","Jeu de société",700],
-    ["📚","Bon bibliothèque",300]
-
-  ];
-
-
-  document.getElementById(
-    "shop"
-  ).innerHTML =
-
-    items.map(item => `
-
-      <div class="card">
-
-        <div class="iconbox">
-          ${item[0]}
-        </div>
-
-        <h3>
-          ${escapeHtml(item[1])}
-        </h3>
-
-        <p class="coin">
-          ${item[2]} 🪙
-        </p>
-
-        <button
-          class="btn primary"
-          onclick="buyReward('${item[1]}',${item[2]})">
-
-          Débloquer
-
-        </button>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-function buyReward(name,cost){
-
-  if(state.coins < cost){
-
-    return toast(
-      "Solde insuffisant."
-    );
-
-  }
-
-
-  state.coins -= cost;
-
-  syncCoins();
-
-
-  toast(
-    name + " débloqué !"
-  );
-
-}
-
-
-function syncCoins(){
-
-  [
-    "coinBalance",
-    "homeCoins",
-    "coinPageBalance"
-
-  ].forEach(id => {
-
-    const element =
-      document.getElementById(id);
-
-    if(element){
-
-      element.textContent =
-        state.coins;
-
-    }
-
-  });
-
-}
-
-
-/* =========================================================
-   OUTILS PROFESSEUR
-   ========================================================= */
-
-function openCoinsModal(){
-
-  openModal(
-
-    "🪙 Attribuer des ClassCoins",
-
-    `
-
-    <div class="form">
-
-      <label>
-
-        Destinataire
-
-        <select class="input">
-
-          <option>Adam</option>
-          <option>Sarah</option>
-          <option>Yassine</option>
-          <option>Équipe Newton</option>
-          <option>Groupe Les lecteurs</option>
-          <option>Toute la classe</option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Nombre
-
-        <input
-          class="input"
-          type="number"
-          value="50">
-
-      </label>
-
-
-      <label>
-
-        Motif
-
-        <select class="input">
-
-          <option>Participation</option>
-          <option>Entraide</option>
-          <option>Lecture</option>
-          <option>Projet</option>
-          <option>Challenge</option>
-          <option>Autre</option>
-
-        </select>
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('ClassCoins attribués avec succès.')
-        ">
-
-        Attribuer
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-function openChallenge(){
-
-  openModal(
-
-    "🎯 Créer un challenge",
-
-    `
-
-    <div class="form">
-
-      <label>
-        Titre
-        <input
-          class="input"
-          placeholder="Challenge de la semaine">
-      </label>
-
-
-      <label>
-        Description
-        <textarea
-          placeholder="Objectif du challenge..."></textarea>
-      </label>
-
-
-      <div class="grid-2">
-
-        <label>
-          Du
-          <input
-            class="input"
-            type="date">
-        </label>
-
-        <label>
-          Au
-          <input
-            class="input"
-            type="date">
-        </label>
-
-      </div>
-
-
-      <label>
-
-        Type
-
-        <select class="input">
-
-          <option>
-            Individuel
-          </option>
-
-          <option>
-            Équipe
-          </option>
-
-          <option>
-            Toute la classe
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Objectif
-
-        <input
-          class="input"
-          placeholder="30 participants">
-
-      </label>
-
-
-      <label>
-
-        Récompense
-
-        <input
-          class="input"
-          value="100 ClassCoins">
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Challenge enregistré !')
-        ">
-
-        Publier
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-function openRequest(){
-
-  openModal(
-
-    "📩 Nouvelle demande",
-
-    `
-
-    <div class="form">
-
-      <label>
-
-        Catégorie
-
-        <select class="input">
-
-          <option>
-            Vie de classe
-          </option>
-
-          <option>
-            Sortie
-          </option>
-
-          <option>
-            Jeux
-          </option>
-
-          <option>
-            Sport
-          </option>
-
-          <option>
-            Bibliothèque
-          </option>
-
-          <option>
-            Matériel
-          </option>
-
-          <option>
-            Idée
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Demande
-
-        <textarea
-          placeholder="Décris ton idée ou ta demande..."></textarea>
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          state.requests.push('Nouvelle demande');
-          renderRequests();
-          closeModal();
-          toast('Demande envoyée aux délégués !')
-        ">
-
-        Envoyer
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-function renderRequests(){
-
-  document.getElementById(
-    "requestList"
-  ).innerHTML =
-
-    state.requests.map(
-      (request,index) => `
-
-      <div class="item">
-
-        <strong>
-          ${escapeHtml(request)}
-        </strong>
-
-        <div class="muted">
-          🟠 En discussion •
-          ${index+5} 👍
-        </div>
-
-      </div>
-
-      `
-    ).join("");
-
-}
-
-
-function openTournament(){
-
-  openModal(
-
-    "🏆 Créer un tournoi",
-
-    `
-
-    <div class="form">
-
-      <label>
-        Nom
-        <input
-          class="input"
-          placeholder="Coupe des Maths">
-      </label>
-
-
-      <label>
-
-        Jeu
-
-        <select class="input">
-
-          <option>
-            Battle Maths
-          </option>
-
-          <option>
-            Battle Géographie
-          </option>
-
-          <option>
-            Quiz
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Nombre d'équipes
-
-        <input
-          class="input"
-          type="number"
-          value="4">
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Tournoi créé !')
-        ">
-
-        Créer
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-function openDocument(){
-
-  openModal(
-
-    "📄 Ajouter un document",
-
-    `
-
-    <div class="form">
-
-      <label>
-
-        Titre
-
-        <input
-          class="input"
-          placeholder="Fiche de révision">
-
-      </label>
-
-
-      <label>
-
-        Matière
-
-        <select class="input">
-
-          <option>
-            Mathématiques
-          </option>
-
-          <option>
-            Français
-          </option>
-
-          <option>
-            Sciences
-          </option>
-
-          <option>
-            Histoire
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Description
-
-        <textarea></textarea>
-
-      </label>
-
-
-      <label>
-
-        Fichier
-
-        <input
-          class="input"
-          type="file">
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Document publié !')
-        ">
-
-        Publier
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-function openGameBuilder(){
-
-  openModal(
-
-    "🎮 Créateur de jeu",
-
-    `
-
-    <div class="form">
-
-      <label>
-
-        Nom
-
-        <input
-          class="input"
-          placeholder="Battle des capitales">
-
-      </label>
-
-
-      <label>
-
-        Modes
-
-        <select class="input">
-
-          <option>
-            Multijoueur
-          </option>
-
-          <option>
-            Coopératif
-          </option>
-
-          <option>
-            Équipe
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Nombre de joueurs
-
-        <input
-          class="input"
-          type="number"
-          value="8">
-
-      </label>
-
-
-      <label>
-
-        Questions
-
-        <textarea
-          placeholder="Ajoute tes questions..."></textarea>
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Jeu publié !')
-        ">
-
-        Publier
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-function openQuizBuilder(){
-
-  openModal(
-
-    "🧠 Créateur de quiz",
-
-    `
-
-    <div class="form">
-
-      <label>
-
-        Titre
-
-        <input
-          class="input"
-          placeholder="Mon quiz">
-
-      </label>
-
-
-      <label>
-
-        Matière
-
-        <select class="input">
-
-          <option>
-            Mathématiques
-          </option>
-
-          <option>
-            Français
-          </option>
-
-          <option>
-            Sciences
-          </option>
-
-          <option>
-            Histoire
-          </option>
-
-          <option>
-            Géographie
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Question 1
-
-        <input
-          class="input"
-          placeholder="Écris la question">
-
-      </label>
-
-
-      <div class="grid-2">
-
-        <input
-          class="input"
-          placeholder="Réponse A">
-
-        <input
-          class="input"
-          placeholder="Réponse B">
-
-        <input
-          class="input"
-          placeholder="Réponse C">
-
-        <input
-          class="input"
-          placeholder="Réponse D">
-
-      </div>
-
-
-      <label>
-
-        Bonne réponse
-
-        <select class="input">
-
-          <option>A</option>
-          <option>B</option>
-          <option>C</option>
-          <option>D</option>
-
-        </select>
-
-      </label>
-
-
-      <button
-        class="btn"
-        onclick="toast('Question ajoutée')">
-
-        + Ajouter une question
-
-      </button>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Quiz publié !')
-        ">
-
-        Publier
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-function openContentBuilder(){
-
-  openModal(
-
-    "📝 Éditeur WYSIWYG",
-
-    `
-
-    <div class="form">
-
-      <label>
-
-        Titre
-
-        <input
-          class="input"
-          placeholder="Titre de la ressource">
-
-      </label>
-
-
-      <div class="toolbar">
-
-        <button
-          class="btn small"
-          onclick="document.execCommand('bold')">
-
-          <b>B</b>
-
-        </button>
-
-
-        <button
-          class="btn small"
-          onclick="document.execCommand('italic')">
-
-          <i>I</i>
-
-        </button>
-
-
-        <button
-          class="btn small"
-          onclick="document.execCommand('insertUnorderedList')">
-
-          • Liste
-
-        </button>
-
-
-        <button
-          class="btn small"
-          onclick="document.execCommand('formatBlock',false,'h2')">
-
-          H2
-
-        </button>
-
-      </div>
-
-
-      <div
-        class="editor"
-        contenteditable="true">
-
-        Commence à écrire ici...
-
-      </div>
-
-
-      <label>
-
-        Classe
-
-        <select class="input">
-
-          <option>
-            6ème A
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <button
-        class="btn primary"
-        onclick="
-          closeModal();
-          toast('Ressource publiée !')
-        ">
-
-        Publier
-
-      </button>
-
-    </div>
-
-    `
-
-  );
-
-}
-
-
-/* =========================================================
-   FIREBASE
-   ========================================================= */
+   VARIABLES FIREBASE
+========================================================= */
 
 let fb = null;
 
@@ -4708,45 +2266,88 @@ let firebaseReady = false;
 
 
 /* =========================================================
-   MESSAGES FIREBASE
-   ========================================================= */
+   RACCOURCI DOM
+========================================================= */
 
-function firebaseErrorMessage(
-  error,
-  context=""
-){
+const $ = id =>
+  document.getElementById(id);
+
+
+/* =========================================================
+   NORMALISATION LOGIN
+========================================================= */
+
+function normalizeLogin(value){
+
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9._-]/g,"");
+
+}
+
+
+/* =========================================================
+   VALIDATION LOGIN
+========================================================= */
+
+function validLogin(login){
+
+  return /^[a-z0-9][a-z0-9._-]{2,39}$/.test(login);
+
+}
+
+
+/* =========================================================
+   EMAIL INTERNE FIREBASE
+========================================================= */
+
+function loginEmail(login){
+
+  return `${login}@ma-classe-6eme.app`;
+
+}
+
+
+/* =========================================================
+   MESSAGES D'ERREUR FIREBASE
+========================================================= */
+
+function firebaseErrorMessage(error,stage="Opération Firebase"){
 
   const code =
-    error?.code ||
-    "unknown";
+    error?.code || "";
 
-
-  const raw =
-    error?.message ||
-    String(error || "Erreur inconnue");
-
-
-  console.error(
-    "Firebase error",
-    {
-      context,
-      code,
-      message:raw,
-      error
-    }
-  );
-
+  const message =
+    String(error?.message || error || "");
 
   const messages = {
 
-    "auth/operation-not-allowed":
-      "La connexion par e-mail/mot de passe n'est pas activée dans Firebase Authentication.",
+    "auth/api-key-not-valid.-please-pass-a-valid-api-key":
+      "La clé API Firebase est invalide. Vérifiez le bloc firebaseConfig.",
 
-    "auth/email-already-in-use":
-      "Ce login est déjà utilisé. Choisissez un autre login.",
+    "auth/invalid-api-key":
+      "La clé API Firebase est invalide.",
 
     "auth/invalid-email":
-      "Le login utilisé produit une adresse Firebase invalide.",
+      "Le login ou l'adresse générée est invalide.",
+
+    "auth/invalid-credential":
+      "Login ou mot de passe incorrect.",
+
+    "auth/user-not-found":
+      "Aucun compte ne correspond à ce login.",
+
+    "auth/wrong-password":
+      "Mot de passe incorrect.",
+
+    "auth/too-many-requests":
+      "Trop de tentatives. Réessayez plus tard.",
+
+    "auth/email-already-in-use":
+      "Ce login existe déjà. Utilisez un autre login ou connectez-vous.",
 
     "auth/weak-password":
       "Le mot de passe doit contenir au moins 6 caractères.",
@@ -4754,207 +2355,189 @@ function firebaseErrorMessage(
     "auth/network-request-failed":
       "Impossible de joindre Firebase. Vérifiez votre connexion Internet.",
 
-    "auth/api-key-not-valid.-please-pass-a-valid-api-key":
-      "La clé API Firebase est invalide. Vérifiez la configuration Firebase.",
-
-    "auth/invalid-api-key":
-      "La clé API Firebase est invalide. Vérifiez la configuration Firebase.",
-
     "permission-denied":
-      "Firestore refuse l'opération. Vérifiez les règles Firestore.",
+      "Accès Firestore refusé. Vérifiez les règles Firestore.",
+
+    "firestore/permission-denied":
+      "Accès Firestore refusé. Vérifiez les règles Firestore.",
 
     "failed-precondition":
-      "Firestore n'est pas correctement configuré ou nécessite une configuration supplémentaire.",
+      "Firestore n'est pas correctement configuré.",
 
     "unavailable":
-      "Le service Firestore est temporairement indisponible.",
-
-    "not-found":
-      "Le document Firebase demandé n'existe pas.",
-
-    "already-exists":
-      "Le document Firebase existe déjà.",
-
-    "resource-exhausted":
-      "Quota Firebase dépassé.",
-
-    "unauthenticated":
-      "Firebase demande une authentification.",
-
-    "invalid-argument":
-      "Une donnée envoyée à Firebase est invalide.",
-
-    "child-not-found":
-      "Aucun compte élève ne correspond au login indiqué."
+      "Firebase est temporairement indisponible."
 
   };
 
-
-  let message =
-    messages[code] ||
-    raw;
-
-
-  if(context){
-
-    message =
-      `${context} — ${message}`;
-
-  }
-
-
-  return `❌ ${message} [${code}]`;
+  return `
+    ❌ ${stage} — 
+    ${messages[code] || message || "Erreur inconnue."}
+    [${code || "unknown"}]
+  `;
 
 }
 
 
 /* =========================================================
-   LOGIN INTERNE
-   ========================================================= */
+   MESSAGES AUTH
+========================================================= */
 
-function loginEmail(login){
+function clearAuthMessages(){
 
-  return (
-    normalizeLogin(login) +
-    "@ma-classe-6eme.app"
-  );
+  $("authError")
+    .classList
+    .add("hidden");
 
-}
+  $("authInfo")
+    .classList
+    .add("hidden");
 
+  $("authError").textContent = "";
 
-function normalizeLogin(value){
-
-  return String(value || "")
-    .trim()
-    .toLowerCase();
+  $("authInfo").textContent = "";
 
 }
 
-
-function validLogin(login){
-
-  return /^[a-z0-9._-]{3,30}$/
-    .test(login);
-
-}
-
-
-/* =========================================================
-   AUTH UI
-   ========================================================= */
 
 function showAuthError(message){
 
-  const error =
-    document.getElementById(
-      "authError"
-    );
-
-
-  error.textContent =
+  $("authError").textContent =
     message;
 
+  $("authError")
+    .classList
+    .remove("hidden");
 
-  error.style.display =
-    "block";
-
-
-  document.getElementById(
-    "authInfo"
-  ).style.display =
-    "none";
+  $("authInfo")
+    .classList
+    .add("hidden");
 
 }
 
 
 function showAuthInfo(message){
 
-  const info =
-    document.getElementById(
-      "authInfo"
-    );
-
-
-  info.textContent =
+  $("authInfo").textContent =
     message;
 
+  $("authInfo")
+    .classList
+    .remove("hidden");
 
-  info.style.display =
-    "block";
-
-
-  document.getElementById(
-    "authError"
-  ).style.display =
-    "none";
+  $("authError")
+    .classList
+    .add("hidden");
 
 }
 
 
-function clearAuthMessages(){
+/* =========================================================
+   ETAT DES FORMULAIRES
+========================================================= */
 
-  document.getElementById(
-    "authError"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "authInfo"
-  ).style.display =
-    "none";
-
-}
-
-
-function authBusy(
-  formId,
-  busy
-){
+function authBusy(formId,busy){
 
   const form =
-    document.getElementById(formId);
+    $(formId);
 
+  if(!form)return;
 
-  if(!form)
-    return;
-
+  form
+    .querySelectorAll("button,input")
+    .forEach(element=>{
+      element.disabled =
+        busy;
+    });
 
   const button =
     form.querySelector(
-      'button[type="submit"]'
+      "button[type=submit]"
     );
 
+  if(!button)return;
 
-  if(!button)
-    return;
+  if(busy){
 
+    button.textContent =
+      formId === "loginForm"
+        ? "Connexion…"
+        : "Création…";
 
-  if(
-    !button.dataset.originalText
-  ){
+  }else{
 
-    button.dataset.originalText =
-      button.textContent;
+    button.textContent =
+      formId === "loginForm"
+        ? "Se connecter"
+        : "Créer le compte";
 
   }
 
-
-  button.disabled =
-    busy;
+}
 
 
-  button.textContent =
-    busy
-      ? "Connexion à Firebase…"
-      : button.dataset.originalText;
+/* =========================================================
+   CHANGEMENT LOGIN / REGISTER
+========================================================= */
+
+function switchAuthMode(mode){
+
+  clearAuthMessages();
+
+  $("loginForm")
+    .classList
+    .toggle(
+      "hidden",
+      mode !== "login"
+    );
+
+  $("registerForm")
+    .classList
+    .toggle(
+      "hidden",
+      mode !== "register"
+    );
+
+  $("loginTab")
+    .classList
+    .toggle(
+      "active",
+      mode === "login"
+    );
+
+  $("registerTab")
+    .classList
+    .toggle(
+      "active",
+      mode === "register"
+    );
+
+}
+
+
+/* =========================================================
+   CHAMPS PARENT
+========================================================= */
+
+function toggleParentFields(){
+
+  const role =
+    document.querySelector(
+      'input[name="regRole"]:checked'
+    )?.value;
+
+  $("parentFields")
+    .classList
+    .toggle(
+      "hidden",
+      role !== "parent"
+    );
 
 }
 
 
 /* =========================================================
    INITIALISATION FIREBASE
-   ========================================================= */
+========================================================= */
 
 async function initFirebase(){
 
@@ -4965,12 +2548,10 @@ async function initFirebase(){
         "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"
       );
 
-
     const authMod =
       await import(
         "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"
       );
-
 
     const fsMod =
       await import(
@@ -4983,10 +2564,8 @@ async function initFirebase(){
         firebaseConfig
       );
 
-
     const auth =
       authMod.getAuth(app);
-
 
     const db =
       fsMod.getFirestore(app);
@@ -4995,9 +2574,13 @@ async function initFirebase(){
     fb = {
 
       app,
+
       auth,
+
       db,
+
       authMod,
+
       fsMod
 
     };
@@ -5006,26 +2589,13 @@ async function initFirebase(){
     window.firebaseApp =
       fb;
 
-
     firebaseReady =
       true;
 
 
-    const status =
-      document.getElementById(
-        "firebaseStatus"
-      );
-
-
-    if(status){
-
-      status.textContent =
-        "🟢 Firebase connecté";
-
-      status.style.color =
-        "#16a34a";
-
-    }
+    $("firebaseStatus")
+      .textContent =
+      "🟢 Firebase connecté";
 
 
     console.log(
@@ -5036,29 +2606,27 @@ async function initFirebase(){
 
     /* =====================================================
        SURVEILLANCE AUTHENTIFICATION
-       ===================================================== */
+    ===================================================== */
 
     authMod.onAuthStateChanged(
-
       auth,
-
       async user => {
 
         if(!user){
 
-          currentUser = null;
+          currentUser =
+            null;
 
-          currentProfile = null;
+          currentProfile =
+            null;
 
+          $("app")
+            .classList
+            .add("hidden");
 
-          document
-            .getElementById(
-              "authScreen"
-            )
-            .classList.remove(
-              "hidden"
-            );
-
+          $("authScreen")
+            .classList
+            .remove("hidden");
 
           return;
 
@@ -5079,23 +2647,26 @@ async function initFirebase(){
             );
 
 
-          const profileSnapshot =
+          const snapshot =
             await fsMod.getDoc(
               profileRef
             );
 
 
-          if(!profileSnapshot.exists()){
+          /* ===============================================
+             PROFIL ABSENT
+          =============================================== */
+
+          if(!snapshot.exists()){
 
             await authMod.signOut(
               auth
             );
 
-
             showAuthError(
-              "Votre compte Firebase existe, mais son profil Firestore est absent. Le compte doit être recréé ou le profil doit être créé dans Firestore."
+              "Votre compte Firebase existe, mais son profil Firestore est absent. " +
+              "Dans Firestore, créez une collection users puis un document dont l'ID est exactement votre UID Firebase."
             );
-
 
             return;
 
@@ -5106,58 +2677,45 @@ async function initFirebase(){
 
             uid:user.uid,
 
-            ...profileSnapshot.data()
+            ...snapshot.data()
 
           };
 
 
           /* ===============================================
-             COMPTE NON APPROUVÉ
-             =============================================== */
+             COMPTE NON APPROUVE
+          =============================================== */
 
           if(
             currentProfile.status !==
             "approved"
           ){
 
-            const status =
-              currentProfile.status;
-
-
             await authMod.signOut(
               auth
             );
 
-
-            if(status==="pending"){
+            if(
+              currentProfile.status ===
+              "pending"
+            ){
 
               showAuthInfo(
-                "⏳ Votre compte est en attente de validation par l'administrateur."
-              );
-
-            }else if(status==="rejected"){
-
-              showAuthError(
-                "❌ Votre compte a été refusé par l'administrateur."
+                "Votre compte est en attente de validation par l'administrateur."
               );
 
             }else{
 
-              showAuthError(
+              showAuthInfo(
                 "Votre compte n'est pas autorisé à se connecter."
               );
 
             }
 
-
             return;
 
           }
 
-
-          /* ===============================================
-             CONNEXION RÉUSSIE
-             =============================================== */
 
           enterApp();
 
@@ -5165,15 +2723,13 @@ async function initFirebase(){
         catch(error){
 
           console.error(
-            "Erreur chargement profil",
+            "PROFILE ERROR",
             error
           );
-
 
           await authMod
             .signOut(auth)
             .catch(()=>{});
-
 
           showAuthError(
             firebaseErrorMessage(
@@ -5185,38 +2741,22 @@ async function initFirebase(){
         }
 
       }
-
     );
 
   }
   catch(error){
 
     console.error(
-      "Firebase initialization error",
+      "FIREBASE INIT ERROR",
       error
     );
-
 
     firebaseReady =
       false;
 
-
-    const status =
-      document.getElementById(
-        "firebaseStatus"
-      );
-
-
-    if(status){
-
-      status.textContent =
-        "🔴 Firebase non disponible";
-
-      status.style.color =
-        "#dc2626";
-
-    }
-
+    $("firebaseStatus")
+      .textContent =
+      "🔴 Firebase non disponible";
 
     showAuthError(
       firebaseErrorMessage(
@@ -5231,79 +2771,8 @@ async function initFirebase(){
 
 
 /* =========================================================
-   SWITCH LOGIN / REGISTER
-   ========================================================= */
-
-function switchAuthMode(mode){
-
-  clearAuthMessages();
-
-
-  document
-    .getElementById("loginForm")
-    .classList.toggle(
-      "hidden",
-      mode!=="login"
-    );
-
-
-  document
-    .getElementById("registerForm")
-    .classList.toggle(
-      "hidden",
-      mode!=="register"
-    );
-
-
-  document
-    .getElementById("loginTab")
-    .classList.toggle(
-      "active",
-      mode==="login"
-    );
-
-
-  document
-    .getElementById("registerTab")
-    .classList.toggle(
-      "active",
-      mode==="register"
-    );
-
-}
-
-
-function toggleParentFields(){
-
-  const role =
-    document.querySelector(
-      'input[name="regRole"]:checked'
-    )?.value;
-
-
-  const fields =
-    document.getElementById(
-      "parentFields"
-    );
-
-
-  fields.classList.toggle(
-    "hidden",
-    role!=="parent"
-  );
-
-
-  document.getElementById(
-    "childLogin"
-  ).required =
-    role==="parent";
-
-}
-
-
-/* =========================================================
-   CONNEXION UTILISATEUR
-   ========================================================= */
+   CONNEXION
+========================================================= */
 
 async function loginUser(){
 
@@ -5320,67 +2789,86 @@ async function loginUser(){
 
   clearAuthMessages();
 
-
   authBusy(
     "loginForm",
     true
   );
 
 
-  const login =
-    normalizeLogin(
-      document.getElementById(
-        "loginInput"
-      ).value
-    );
-
-
-  const password =
-    document.getElementById(
-      "passwordInput"
-    ).value;
-
-
-  if(!validLogin(login)){
-
-    authBusy(
-      "loginForm",
-      false
-    );
-
-
-    showAuthError(
-      "Login invalide. Utilisez 3 à 30 caractères : lettres, chiffres, point, tiret ou underscore."
-    );
-
-
-    return;
-
-  }
-
-
   try{
+
+    const login =
+      normalizeLogin(
+        $("loginInput").value
+      );
+
+    const password =
+      $("passwordInput").value;
+
+
+    if(!validLogin(login)){
+
+      throw Object.assign(
+        new Error(
+          "Login invalide."
+        ),
+        {
+          code:"invalid-login"
+        }
+      );
+
+    }
+
+
+    if(!password){
+
+      throw Object.assign(
+        new Error(
+          "Mot de passe requis."
+        ),
+        {
+          code:"invalid-password"
+        }
+      );
+
+    }
+
 
     await fb.authMod
       .signInWithEmailAndPassword(
-
         fb.auth,
-
         loginEmail(login),
-
         password
-
       );
 
   }
   catch(error){
 
-    showAuthError(
-      firebaseErrorMessage(
-        error,
-        "Connexion"
-      )
+    console.error(
+      "LOGIN ERROR",
+      error
     );
+
+
+    if(
+      error.code ===
+      "invalid-login"
+    ){
+
+      showAuthError(
+        "❌ Login invalide. Utilisez au moins 3 caractères : lettres, chiffres, point, tiret ou underscore."
+      );
+
+    }else{
+
+      showAuthError(
+        firebaseErrorMessage(
+          error,
+          "Connexion"
+        )
+      );
+
+    }
 
   }
   finally{
@@ -5396,15 +2884,15 @@ async function loginUser(){
 
 
 /* =========================================================
-   CRÉATION DE COMPTE
-   ========================================================= */
+   CREATION COMPTE
+========================================================= */
 
 async function registerUser(){
 
   if(!firebaseReady){
 
     showAuthError(
-      "Firebase n'est pas encore prêt. Attendez quelques secondes puis réessayez."
+      "Firebase n'est pas encore prêt."
     );
 
     return;
@@ -5414,7 +2902,6 @@ async function registerUser(){
 
   clearAuthMessages();
 
-
   authBusy(
     "registerForm",
     true
@@ -5422,35 +2909,29 @@ async function registerUser(){
 
 
   const firstName =
-    document.getElementById(
-      "regFirstName"
-    ).value.trim();
+    $("regFirstName")
+      .value
+      .trim();
 
 
   const lastName =
-    document.getElementById(
-      "regLastName"
-    ).value.trim();
+    $("regLastName")
+      .value
+      .trim();
 
 
   const login =
     normalizeLogin(
-      document.getElementById(
-        "regLogin"
-      ).value
+      $("regLogin").value
     );
 
 
   const password =
-    document.getElementById(
-      "regPassword"
-    ).value;
+    $("regPassword").value;
 
 
   const password2 =
-    document.getElementById(
-      "regPassword2"
-    ).value;
+    $("regPassword2").value;
 
 
   const role =
@@ -5462,31 +2943,24 @@ async function registerUser(){
 
   const childLogin =
     normalizeLogin(
-      document.getElementById(
-        "childLogin"
-      ).value
+      $("childLogin").value
     );
 
 
-  /* ===============================================
+  /* =======================================================
      VALIDATIONS
-     =============================================== */
+  ======================================================= */
 
-  if(
-    !firstName ||
-    !lastName
-  ){
+  if(!firstName || !lastName){
+
+    showAuthError(
+      "❌ Le prénom et le nom sont obligatoires."
+    );
 
     authBusy(
       "registerForm",
       false
     );
-
-
-    showAuthError(
-      "Veuillez renseigner le prénom et le nom."
-    );
-
 
     return;
 
@@ -5495,16 +2969,14 @@ async function registerUser(){
 
   if(!validLogin(login)){
 
+    showAuthError(
+      "❌ Login invalide. Utilisez 3 à 40 caractères : lettres, chiffres, point, tiret ou underscore."
+    );
+
     authBusy(
       "registerForm",
       false
     );
-
-
-    showAuthError(
-      "Login invalide. Utilisez 3 à 30 caractères : lettres, chiffres, point, tiret ou underscore. Exemple : admin123"
-    );
-
 
     return;
 
@@ -5513,16 +2985,14 @@ async function registerUser(){
 
   if(password.length < 6){
 
+    showAuthError(
+      "❌ Le mot de passe doit contenir au moins 6 caractères."
+    );
+
     authBusy(
       "registerForm",
       false
     );
-
-
-    showAuthError(
-      "Le mot de passe doit contenir au moins 6 caractères."
-    );
-
 
     return;
 
@@ -5531,16 +3001,14 @@ async function registerUser(){
 
   if(password !== password2){
 
+    showAuthError(
+      "❌ Les deux mots de passe sont différents."
+    );
+
     authBusy(
       "registerForm",
       false
     );
-
-
-    showAuthError(
-      "Les deux mots de passe sont différents."
-    );
-
 
     return;
 
@@ -5548,27 +3016,26 @@ async function registerUser(){
 
 
   if(
-    role==="parent" &&
+    role === "parent" &&
     !validLogin(childLogin)
   ){
+
+    showAuthError(
+      "❌ Indiquez un login élève valide."
+    );
 
     authBusy(
       "registerForm",
       false
     );
 
-
-    showAuthError(
-      "Le login de l'enfant est invalide."
-    );
-
-
     return;
 
   }
 
 
-  let createdCredential = null;
+  let createdCredential =
+    null;
 
 
   try{
@@ -5578,43 +3045,35 @@ async function registerUser(){
 
 
     /* =====================================================
-       ÉTAPE 1
-       CRÉATION FIREBASE AUTH
-
-       IMPORTANT :
-       On crée d'abord l'utilisateur Authentication.
-       ===================================================== */
+       CREATION AUTH
+    ===================================================== */
 
     createdCredential =
       await fb.authMod
         .createUserWithEmailAndPassword(
-
           fb.auth,
-
           loginEmail(login),
-
           password
-
         );
 
 
     const uid =
-      createdCredential.user.uid;
+      createdCredential
+        .user
+        .uid;
 
 
     /* =====================================================
-       ÉTAPE 2
-       DÉTERMINER SI C'EST LE PREMIER COMPTE
+       DETERMINATION PREMIER COMPTE
+    ===================================================== */
 
-       Le premier utilisateur devient ADMIN.
-       ===================================================== */
-
-    let isFirst = false;
+    let isFirst =
+      false;
 
 
     try{
 
-      const settingsRef =
+      const configRef =
         fs.doc(
           fb.db,
           "system",
@@ -5622,102 +3081,94 @@ async function registerUser(){
         );
 
 
-      const settingsSnapshot =
+      const configSnapshot =
         await fs.getDoc(
-          settingsRef
+          configRef
         );
 
 
       isFirst =
-        !settingsSnapshot.exists() ||
-        settingsSnapshot.data().initialized !== true;
+        !configSnapshot.exists() ||
+        configSnapshot.data()
+          .initialized !== true;
 
     }
     catch(error){
 
       throw Object.assign(
-
         new Error(
           error.message
         ),
-
         {
           code:error.code,
-          original:error,
           stage:"lecture system/config"
         }
-
       );
 
     }
 
 
     /* =====================================================
-       ÉTAPE 3
-       LIAISON PARENT → ENFANT
-       ===================================================== */
+       RECHERCHE ENFANT POUR PARENT
+    ===================================================== */
 
-    let child = null;
+    let child =
+      null;
 
 
-    if(role==="parent"){
-
-      const childQuery =
-        fs.query(
-
-          fs.collection(
-            fb.db,
-            "users"
-          ),
-
-          fs.where(
-            "login",
-            "==",
-            childLogin
-          ),
-
-          fs.where(
-            "role",
-            "==",
-            "eleve"
-          )
-
-        );
-
+    if(role === "parent"){
 
       const childSnapshot =
         await fs.getDocs(
-          childQuery
+
+          fs.query(
+
+            fs.collection(
+              fb.db,
+              "users"
+            ),
+
+            fs.where(
+              "login",
+              "==",
+              childLogin
+            ),
+
+            fs.where(
+              "role",
+              "==",
+              "eleve"
+            )
+
+          )
+
         );
 
 
       if(childSnapshot.empty){
 
         throw Object.assign(
-
           new Error(
             "Aucun compte élève ne correspond à ce login."
           ),
-
           {
-            code:"child-not-found",
-            stage:"liaison parent-enfant"
+            code:"child-not-found"
           }
-
         );
 
       }
 
 
-      const childDocument =
-        childSnapshot.docs[0];
-
-
       child = {
 
-        uid:childDocument.id,
+        uid:
+          childSnapshot
+            .docs[0]
+            .id,
 
-        ...childDocument.data()
+        ...childSnapshot
+          .docs[0]
+          .data()
 
       };
 
@@ -5725,9 +3176,8 @@ async function registerUser(){
 
 
     /* =====================================================
-       ÉTAPE 4
        BATCH FIRESTORE
-       ===================================================== */
+    ===================================================== */
 
     const batch =
       fs.writeBatch(
@@ -5744,9 +3194,7 @@ async function registerUser(){
 
 
     batch.set(
-
       userRef,
-
       {
 
         login,
@@ -5756,11 +3204,8 @@ async function registerUser(){
         lastName,
 
         displayName:
-          (
-            firstName +
-            " " +
-            lastName
-          ).trim(),
+          `${firstName} ${lastName}`
+            .trim(),
 
         role:
           isFirst
@@ -5774,6 +3219,8 @@ async function registerUser(){
 
         classId:"",
 
+        classCoins:0,
+
         createdAt:
           fs.serverTimestamp(),
 
@@ -5783,29 +3230,33 @@ async function registerUser(){
             : null
 
       }
-
     );
 
 
     /* =====================================================
-       INITIALISATION DU SYSTÈME
-       ===================================================== */
+       CONFIGURATION PREMIER ADMIN
+    ===================================================== */
 
     if(isFirst){
 
-      batch.set(
-
+      const configRef =
         fs.doc(
           fb.db,
           "system",
           "config"
-        ),
+        );
+
+
+      batch.set(
+
+        configRef,
 
         {
 
           initialized:true,
 
-          firstAdminUid:uid,
+          firstAdminUid:
+            uid,
 
           createdAt:
             fs.serverTimestamp()
@@ -5822,34 +3273,43 @@ async function registerUser(){
 
 
     /* =====================================================
-       CRÉATION LIAISON PARENT
-       ===================================================== */
+       LIEN PARENT / ENFANT
+    ===================================================== */
 
     if(
-      role==="parent" &&
+      role === "parent" &&
       child
     ){
 
-      batch.set(
-
+      const linkRef =
         fs.doc(
           fs.collection(
             fb.db,
             "parentLinks"
           )
-        ),
+        );
+
+
+      batch.set(
+
+        linkRef,
 
         {
 
-          parentUid:uid,
+          parentUid:
+            uid,
 
-          parentLogin:login,
+          parentLogin:
+            login,
 
-          childUid:child.uid,
+          childUid:
+            child.uid,
 
-          childLogin:child.login,
+          childLogin:
+            child.login,
 
-          status:"pending",
+          status:
+            "pending",
 
           reported:false,
 
@@ -5864,40 +3324,34 @@ async function registerUser(){
 
 
     /* =====================================================
-       ÉCRITURE FIRESTORE
-       ===================================================== */
+       VALIDATION BATCH
+    ===================================================== */
 
     await batch.commit();
 
 
     /* =====================================================
        PREMIER COMPTE
-       ===================================================== */
+    ===================================================== */
 
     if(isFirst){
 
       showAuthInfo(
-
-        "🎉 Premier compte créé avec succès. Vous êtes maintenant ADMINISTRATEUR. Connexion en cours…"
-
+        "🎉 Premier compte créé : vous êtes maintenant ADMINISTRATEUR. Connexion en cours…"
       );
-
-
-      /*
-       onAuthStateChanged() détectera automatiquement
-       l'utilisateur et ouvrira l'application.
-      */
 
     }
+
+    /* =====================================================
+       AUTRES COMPTES
+    ===================================================== */
+
     else{
 
-      /*
-       Les comptes normaux doivent être validés.
-      */
-
-      await fb.authMod.signOut(
-        fb.auth
-      );
+      await fb.authMod
+        .signOut(
+          fb.auth
+        );
 
 
       switchAuthMode(
@@ -5906,9 +3360,7 @@ async function registerUser(){
 
 
       showAuthInfo(
-
         "✅ Compte créé. Il doit maintenant être validé par l'administrateur."
-
       );
 
     }
@@ -5923,9 +3375,8 @@ async function registerUser(){
 
 
     /* =====================================================
-       NETTOYAGE SI FIREBASE AUTH A ÉTÉ CRÉÉ
-       MAIS FIRESTORE A ÉCHOUÉ
-       ===================================================== */
+       NETTOYAGE COMPTE AUTH ORPHELIN
+    ===================================================== */
 
     if(
       createdCredential?.user
@@ -5942,7 +3393,7 @@ async function registerUser(){
       catch(cleanError){
 
         console.warn(
-          "Impossible de supprimer le compte Auth orphelin.",
+          "Impossible de supprimer le compte Auth orphelin",
           cleanError
         );
 
@@ -5961,6 +3412,20 @@ async function registerUser(){
       );
 
     }
+
+    else if(
+      error.code ===
+      "permission-denied" ||
+      error.code ===
+      "firestore/permission-denied"
+    ){
+
+      showAuthError(
+        "❌ Création du profil refusée par les règles Firestore. Vérifiez les règles de la collection users et du document system/config."
+      );
+
+    }
+
     else{
 
       showAuthError(
@@ -5986,150 +3451,14 @@ async function registerUser(){
 
 
 /* =========================================================
-   ENTRÉE DANS L'APPLICATION
-   ========================================================= */
-
-function enterApp(){
-
-  document
-    .getElementById("authScreen")
-    .classList.add("hidden");
-
-
-  const fullName =
-    currentProfile.displayName ||
-    currentProfile.login ||
-    "Utilisateur";
-
-
-  document.getElementById(
-    "userName"
-  ).textContent =
-    fullName;
-
-
-  document.getElementById(
-    "roleLabel"
-  ).textContent =
-
-    (
-      currentProfile.classId
-        ? currentProfile.classId +
-          " • "
-        : ""
-    ) +
-
-    roleLabel(
-      currentProfile.role
-    );
-
-
-  document.querySelector(
-    ".avatar"
-  ).textContent =
-
-    (
-      fullName[0] ||
-      "?"
-    ).toUpperCase();
-
-
-  document
-    .getElementById("adminNav")
-    .classList.toggle(
-
-      "hidden",
-
-      currentProfile.role !==
-      "admin"
-
-    );
-
-
-  document
-    .getElementById("teacherNav")
-    .classList.toggle(
-
-      "hidden",
-
-      ![
-        "admin",
-        "teacher"
-      ].includes(
-        currentProfile.role
-      )
-
-    );
-
-
-  document
-    .getElementById("familyNav")
-    .classList.toggle(
-
-      "hidden",
-
-      currentProfile.role !==
-      "eleve"
-
-    );
-
-
-  showPage("home");
-
-
-  if(
-    currentProfile.role ===
-    "admin"
-  ){
-
-    loadAdminData();
-
-  }
-
-
-  if(
-    currentProfile.role ===
-    "eleve"
-  ){
-
-    loadFamily();
-
-  }
-
-}
-
-
-function roleLabel(role){
-
-  return {
-
-    admin:
-      "Administrateur",
-
-    teacher:
-      "Maître(sse)",
-
-    eleve:
-      "Élève",
-
-    parent:
-      "Parent d'élève"
-
-  }[role] || role;
-
-}
-
-
-/* =========================================================
-   DÉCONNEXION
-   ========================================================= */
+   DECONNEXION
+========================================================= */
 
 async function logoutUser(){
 
-  if(
-    fb &&
-    fb.auth
-  ){
+  if(!fb)return;
+
+  try{
 
     await fb.authMod
       .signOut(
@@ -6137,882 +3466,931 @@ async function logoutUser(){
       );
 
   }
+  catch(error){
+
+    console.error(
+      "LOGOUT ERROR",
+      error
+    );
+
+  }
+
+}
 
 
-  switchAuthMode(
-    "login"
+/* =========================================================
+   ENTREE DANS L'APPLICATION
+========================================================= */
+
+function enterApp(){
+
+  $("authScreen")
+    .classList
+    .add("hidden");
+
+  $("app")
+    .classList
+    .remove("hidden");
+
+
+  const profile =
+    currentProfile || {};
+
+
+  const name =
+    profile.displayName ||
+    `${profile.firstName || ""} ${profile.lastName || ""}`
+      .trim() ||
+    "Utilisateur";
+
+
+  const roleLabels = {
+
+    admin:
+      "Administrateur",
+
+    teacher:
+      "Professeur",
+
+    eleve:
+      "Élève",
+
+    parent:
+      "Parent"
+
+  };
+
+
+  $("userName")
+    .textContent =
+    name;
+
+
+  $("userRole")
+    .textContent =
+    roleLabels[
+      profile.role
+    ] ||
+    profile.role ||
+    "Utilisateur";
+
+
+  $("userAvatar")
+    .textContent =
+    name
+      .charAt(0)
+      .toUpperCase();
+
+
+  $("welcomeTitle")
+    .textContent =
+    `Bienvenue ${profile.firstName || name} 👋`;
+
+
+  const coins =
+    Number(
+      profile.classCoins || 0
+    );
+
+
+  $("homeCoins")
+    .textContent =
+    `🪙 ${coins}`;
+
+
+  $("coinsBig")
+    .textContent =
+    `${coins} 🪙`;
+
+
+  /* =====================================================
+     VISIBILITE DES ESPACES
+  ===================================================== */
+
+  document
+    .querySelectorAll(
+      ".role-admin"
+    )
+    .forEach(element=>{
+
+      element.style.display =
+        profile.role === "admin"
+          ? ""
+          : "none";
+
+    });
+
+
+  document
+    .querySelectorAll(
+      ".role-teacher"
+    )
+    .forEach(element=>{
+
+      element.style.display =
+        (
+          profile.role === "teacher" ||
+          profile.role === "admin"
+        )
+          ? ""
+          : "none";
+
+    });
+
+
+  document
+    .querySelectorAll(
+      ".role-parent"
+    )
+    .forEach(element=>{
+
+      element.style.display =
+        profile.role === "parent"
+          ? ""
+          : "none";
+
+    });
+
+
+  if(
+    profile.role === "parent"
+  ){
+
+    showPage(
+      "family"
+    );
+
+  }
+  else{
+
+    showPage(
+      "home"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   TITRES DES PAGES
+========================================================= */
+
+const pageTitles = {
+
+  home:[
+    "Accueil",
+    "Bienvenue dans votre espace de classe."
+  ],
+
+  schedule:[
+    "Emploi du temps",
+    "Organisation des cours."
+  ],
+
+  discussions:[
+    "Discussions",
+    "Échangez avec votre classe."
+  ],
+
+  games:[
+    "Jouer",
+    "Des jeux pour apprendre et partager."
+  ],
+
+  quiz:[
+    "Quiz",
+    "Testez vos connaissances."
+  ],
+
+  library:[
+    "Bibliothèque",
+    "Documents et ressources."
+  ],
+
+  activities:[
+    "Activités",
+    "Activités et sorties entre amis."
+  ],
+
+  teams:[
+    "Équipes & groupes",
+    "Travaillez et jouez ensemble."
+  ],
+
+  challenges:[
+    "Challenges",
+    "Défis individuels et collectifs."
+  ],
+
+  coins:[
+    "ClassCoins",
+    "Récompenses et engagement."
+  ],
+
+  collaboration:[
+    "Collaboration",
+    "Projets et créations collectives."
+  ],
+
+  delegates:[
+    "Délégués",
+    "Représentation de la classe."
+  ],
+
+  family:[
+    "Ma famille",
+    "Suivi de la vie de classe."
+  ],
+
+  teacher:[
+    "Espace professeur",
+    "Création et gestion de contenus."
+  ],
+
+  admin:[
+    "Administration",
+    "Gestion de la plateforme."
+  ]
+
+};
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(page){
+
+  document
+    .querySelectorAll(
+      ".page"
+    )
+    .forEach(element=>{
+
+      element
+        .classList
+        .remove("active");
+
+    });
+
+
+  const target =
+    $(`page-${page}`);
+
+
+  if(!target)return;
+
+
+  target
+    .classList
+    .add("active");
+
+
+  document
+    .querySelectorAll(
+      ".nav-btn[data-page]"
+    )
+    .forEach(button=>{
+
+      button
+        .classList
+        .toggle(
+          "active",
+          button.dataset.page === page
+        );
+
+    });
+
+
+  $("pageTitle")
+    .textContent =
+    pageTitles[page]?.[0] ||
+    page;
+
+
+  $("pageSubtitle")
+    .textContent =
+    pageTitles[page]?.[1] ||
+    "";
+
+
+  window.scrollTo({
+
+    top:0,
+
+    behavior:"smooth"
+
+  });
+
+}
+
+
+document
+  .querySelectorAll(
+    ".nav-btn[data-page]"
+  )
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        showPage(
+          button.dataset.page
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   MODELES MODALES
+========================================================= */
+
+const modalTemplates = {
+
+  discussionModal:[
+
+    "Nouvelle discussion",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Titre
+      </label>
+
+      <input
+        placeholder="Sujet de la discussion">
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Message
+      </label>
+
+      <textarea
+        rows="5"
+        placeholder="Votre message"></textarea>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Discussion')">
+
+      Publier
+
+    </button>
+
+    `
+
+  ],
+
+
+  gameModal:[
+
+    "Créer un jeu",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Nom du jeu
+      </label>
+
+      <input
+        placeholder="Ex. Quiz express">
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Description
+      </label>
+
+      <textarea rows="4"></textarea>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Jeu')">
+
+      Créer
+
+    </button>
+
+    `
+
+  ],
+
+
+  quizModal:[
+
+    "Créer un quiz",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Titre
+      </label>
+
+      <input
+        placeholder="Titre du quiz">
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Questions
+      </label>
+
+      <div
+        class="editor"
+        contenteditable="true">
+
+        Écrivez vos questions ici…
+
+      </div>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Quiz')">
+
+      Enregistrer
+
+    </button>
+
+    `
+
+  ],
+
+
+  resourceModal:[
+
+    "Ajouter un document",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Titre
+      </label>
+
+      <input>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Description
+      </label>
+
+      <textarea rows="4"></textarea>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Fichier / lien
+      </label>
+
+      <input
+        placeholder="https://...">
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Document')">
+
+      Ajouter
+
+    </button>
+
+    `
+
+  ],
+
+
+  activityModal:[
+
+    "Proposer une activité",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Activité
+      </label>
+
+      <input
+        placeholder="Ex. sortie football">
+
+    </div>
+
+    <div class="grid-2">
+
+      <div class="form-group">
+
+        <label>
+          Date
+        </label>
+
+        <input type="date">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>
+          Heure
+        </label>
+
+        <input type="time">
+
+      </div>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Description
+      </label>
+
+      <textarea rows="4"></textarea>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Activité')">
+
+      Proposer
+
+    </button>
+
+    `
+
+  ],
+
+
+  teamModal:[
+
+    "Créer une équipe",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Nom
+      </label>
+
+      <input
+        placeholder="Nom de l'équipe">
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Description
+      </label>
+
+      <textarea rows="3"></textarea>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Équipe')">
+
+      Créer
+
+    </button>
+
+    `
+
+  ],
+
+
+  challengeModal:[
+
+    "Créer un challenge",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Nom du challenge
+      </label>
+
+      <input>
+
+    </div>
+
+    <div class="grid-2">
+
+      <div class="form-group">
+
+        <label>
+          Récompense
+        </label>
+
+        <input
+          type="number"
+          value="20">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>
+          Date limite
+        </label>
+
+        <input
+          type="date">
+
+      </div>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Consigne
+      </label>
+
+      <textarea rows="4"></textarea>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Challenge')">
+
+      Créer
+
+    </button>
+
+    `
+
+  ],
+
+
+  collabModal:[
+
+    "Nouveau projet",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Nom du projet
+      </label>
+
+      <input>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Description
+      </label>
+
+      <textarea rows="4"></textarea>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Projet')">
+
+      Créer
+
+    </button>
+
+    `
+
+  ],
+
+
+  delegateModal:[
+
+    "Ajouter un délégué",
+
+    `
+
+    <div class="form-group">
+
+      <label>
+        Nom
+      </label>
+
+      <input>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Fonction
+      </label>
+
+      <select>
+
+        <option>
+          Titulaire
+        </option>
+
+        <option>
+          Suppléant
+        </option>
+
+      </select>
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="saveDemo('Délégué')">
+
+      Enregistrer
+
+    </button>
+
+    `
+
+  ],
+
+
+  teacherContentModal:[
+
+    "Créer du contenu",
+
+    `
+
+    <div
+      class="grid-2">
+
+      <button
+        class="secondary"
+        onclick="openModal('quizModal')">
+
+        🧠 Quiz
+
+      </button>
+
+      <button
+        class="secondary"
+        onclick="openModal('resourceModal')">
+
+        📄 Document
+
+      </button>
+
+      <button
+        class="secondary"
+        onclick="openModal('challengeModal')">
+
+        🏆 Challenge
+
+      </button>
+
+      <button
+        class="secondary"
+        onclick="openModal('activityModal')">
+
+        🏃 Activité
+
+      </button>
+
+    </div>
+
+    `
+
+  ]
+
+};
+
+
+/* =========================================================
+   OUVERTURE MODALE
+========================================================= */
+
+function openModal(id){
+
+  const template =
+    modalTemplates[id];
+
+
+  if(!template)return;
+
+
+  $("modalTitle")
+    .textContent =
+    template[0];
+
+
+  $("modalContent")
+    .innerHTML =
+    template[1];
+
+
+  $("modal")
+    .classList
+    .add("show");
+
+}
+
+
+/* =========================================================
+   FERMETURE MODALE
+========================================================= */
+
+function closeModal(){
+
+  $("modal")
+    .classList
+    .remove("show");
+
+}
+
+
+/* =========================================================
+   ACTION DEMO
+========================================================= */
+
+function saveDemo(type){
+
+  closeModal();
+
+  alert(
+    `✅ ${type} créé dans le mode prototype.`
   );
 
-
-  clearAuthMessages();
-
 }
 
 
 /* =========================================================
-   ADMINISTRATION
-   ========================================================= */
+   EXPOSITION DES FONCTIONS AU HTML
+========================================================= */
 
-async function loadAdminData(){
+window.switchAuthMode =
+  switchAuthMode;
 
-  if(
-    !currentProfile ||
-    currentProfile.role !==
-    "admin"
-  ){
+window.toggleParentFields =
+  toggleParentFields;
 
-    return;
+window.loginUser =
+  loginUser;
 
-  }
+window.registerUser =
+  registerUser;
 
+window.logoutUser =
+  logoutUser;
 
-  try{
+window.showPage =
+  showPage;
 
-    const fs =
-      fb.fsMod;
+window.openModal =
+  openModal;
 
+window.closeModal =
+  closeModal;
 
-    const snapshot =
-      await fs.getDocs(
-
-        fs.collection(
-          fb.db,
-          "users"
-        )
-
-      );
-
-
-    const users =
-      snapshot.docs.map(
-        document => ({
-
-          uid:document.id,
-
-          ...document.data()
-
-        })
-
-      );
-
-
-    const counts = {
-
-      eleve:0,
-      teacher:0,
-      parent:0
-
-    };
-
-
-    users.forEach(
-      user => {
-
-        if(
-          counts[user.role] !==
-          undefined
-        ){
-
-          counts[user.role]++;
-
-        }
-
-      }
-    );
-
-
-    document.getElementById(
-      "adminStudents"
-    ).textContent =
-      counts.eleve;
-
-
-    document.getElementById(
-      "adminTeachers"
-    ).textContent =
-      counts.teacher;
-
-
-    document.getElementById(
-      "adminParents"
-    ).textContent =
-      counts.parent;
-
-
-    document.getElementById(
-      "adminPending"
-    ).textContent =
-
-      users.filter(
-        user =>
-          user.status ===
-          "pending"
-      ).length;
-
-
-    /* =====================================================
-       COMPTES EN ATTENTE
-       ===================================================== */
-
-    const pending =
-      users.filter(
-        user =>
-          user.status ===
-          "pending"
-      );
-
-
-    document.getElementById(
-      "pendingUsers"
-    ).innerHTML =
-
-      pending.length
-
-        ? pending.map(
-            user => `
-
-              <div class="item">
-
-                <div class="row">
-
-                  <div>
-
-                    <strong>
-                      ${escapeHtml(
-                        user.displayName ||
-                        user.login
-                      )}
-                    </strong>
-
-                    <div class="muted">
-
-                      ${escapeHtml(
-                        user.login
-                      )}
-
-                      •
-                      ${roleLabel(
-                        user.role
-                      )}
-
-                    </div>
-
-                  </div>
-
-
-                  <div>
-
-                    <button
-                      class="btn success small"
-                      onclick="approveUser('${user.uid}')">
-
-                      ✓ Valider
-
-                    </button>
-
-                    <button
-                      class="btn danger small"
-                      onclick="rejectUser('${user.uid}')">
-
-                      ✕ Refuser
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            `
-          ).join("")
-
-        : `
-
-          <div class="muted">
-            Aucune demande en attente.
-          </div>
-
-        `;
-
-
-    /* =====================================================
-       TOUS LES UTILISATEURS
-       ===================================================== */
-
-    document.getElementById(
-      "allUsers"
-    ).innerHTML =
-
-      users.map(
-        user => `
-
-          <div class="item">
-
-            <div class="row">
-
-              <div>
-
-                <strong>
-                  ${escapeHtml(
-                    user.displayName ||
-                    user.login
-                  )}
-                </strong>
-
-                <div class="muted">
-
-                  ${escapeHtml(
-                    user.login
-                  )}
-
-                  •
-                  ${roleLabel(
-                    user.role
-                  )}
-
-                  •
-                  ${escapeHtml(
-                    user.status
-                  )}
-
-                </div>
-
-              </div>
-
-
-              <select
-                class="input"
-                style="width:auto"
-                onchange="changeUserRole('${user.uid}',this.value)"
-                ${
-                  user.uid ===
-                  currentUser.uid
-                    ? "disabled"
-                    : ""
-                }>
-
-                ${
-                  [
-                    "eleve",
-                    "teacher",
-                    "parent",
-                    "admin"
-                  ]
-
-                  .map(
-                    role => `
-
-                      <option
-                        value="${role}"
-                        ${
-                          role ===
-                          user.role
-                            ? "selected"
-                            : ""
-                        }>
-
-                        ${roleLabel(
-                          role
-                        )}
-
-                      </option>
-
-                    `
-                  )
-                  .join("")
-                }
-
-              </select>
-
-            </div>
-
-          </div>
-
-        `
-      ).join("");
-
-
-    /* =====================================================
-       LIAISONS PARENT-ENFANT
-       ===================================================== */
-
-    const links =
-      await fs.getDocs(
-
-        fs.collection(
-          fb.db,
-          "parentLinks"
-        )
-
-      );
-
-
-    document.getElementById(
-      "parentLinksAdmin"
-    ).innerHTML =
-
-      links.empty
-
-        ? `
-
-          <div class="muted">
-            Aucune liaison.
-          </div>
-
-        `
-
-        : links.docs.map(
-            document => {
-
-              const link =
-                document.data();
-
-
-              return `
-
-                <div class="item">
-
-                  <div class="row">
-
-                    <div>
-
-                      👨‍👩‍👧
-
-                      <strong>
-                        ${escapeHtml(
-                          link.parentLogin ||
-                          "parent"
-                        )}
-                      </strong>
-
-                      →
-
-                      ${escapeHtml(
-                        link.childLogin ||
-                        "enfant"
-                      )}
-
-                      <div class="muted">
-
-                        Statut :
-                        ${escapeHtml(
-                          link.status ||
-                          "unknown"
-                        )}
-
-                      </div>
-
-                    </div>
-
-                    <span class="chip">
-
-                      ${
-                        link.reported
-                          ? "⚠️ signalé"
-                          : "OK"
-                      }
-
-                    </span>
-
-                  </div>
-
-                </div>
-
-              `;
-
-            }
-          ).join("");
-
-  }
-  catch(error){
-
-    showAuthError(
-      firebaseErrorMessage(
-        error,
-        "Chargement administration"
-      )
-    );
-
-  }
-
-}
+window.saveDemo =
+  saveDemo;
 
 
 /* =========================================================
-   APPROUVER UTILISATEUR
-   ========================================================= */
-
-async function approveUser(uid){
-
-  if(
-    currentProfile?.role !==
-    "admin"
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    await fb.fsMod.updateDoc(
-
-      fb.fsMod.doc(
-        fb.db,
-        "users",
-        uid
-      ),
-
-      {
-
-        status:"approved",
-
-        approvedAt:
-          fb.fsMod.serverTimestamp()
-
-      }
-
-    );
-
-
-    toast(
-      "Compte validé."
-    );
-
-
-    loadAdminData();
-
-  }
-  catch(error){
-
-    showAuthError(
-      firebaseErrorMessage(
-        error,
-        "Validation du compte"
-      )
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   REFUSER UTILISATEUR
-   ========================================================= */
-
-async function rejectUser(uid){
-
-  if(
-    currentProfile?.role !==
-    "admin"
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    await fb.fsMod.updateDoc(
-
-      fb.fsMod.doc(
-        fb.db,
-        "users",
-        uid
-      ),
-
-      {
-        status:"rejected"
-      }
-
-    );
-
-
-    toast(
-      "Compte refusé."
-    );
-
-
-    loadAdminData();
-
-  }
-  catch(error){
-
-    showAuthError(
-      firebaseErrorMessage(
-        error,
-        "Refus du compte"
-      )
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   CHANGER LE RÔLE
-   ========================================================= */
-
-async function changeUserRole(
-  uid,
-  role
-){
-
-  if(
-    currentProfile?.role !==
-    "admin"
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    await fb.fsMod.updateDoc(
-
-      fb.fsMod.doc(
-        fb.db,
-        "users",
-        uid
-      ),
-
-      {
-        role
-      }
-
-    );
-
-
-    toast(
-      "Rôle modifié."
-    );
-
-
-    loadAdminData();
-
-  }
-  catch(error){
-
-    showAuthError(
-      firebaseErrorMessage(
-        error,
-        "Modification du rôle"
-      )
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   FAMILLE
-   ========================================================= */
-
-async function loadFamily(){
-
-  if(
-    !currentProfile ||
-    currentProfile.role !==
-    "eleve"
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    const fs =
-      fb.fsMod;
-
-
-    const query =
-      fs.query(
-
-        fs.collection(
-          fb.db,
-          "parentLinks"
-        ),
-
-        fs.where(
-          "childUid",
-          "==",
-          currentUser.uid
-        )
-
-      );
-
-
-    const snapshot =
-      await fs.getDocs(
-        query
-      );
-
-
-    const links =
-      snapshot.docs.map(
-        document => ({
-
-          id:document.id,
-
-          ...document.data()
-
-        })
-
-      );
-
-
-    document.getElementById(
-      "familyList"
-    ).innerHTML =
-
-      links.length
-
-        ? links.map(
-            link => `
-
-              <div class="item">
-
-                <div class="row">
-
-                  <div>
-
-                    <strong>
-                      👨‍👩‍👧
-                      ${escapeHtml(
-                        link.parentLogin
-                      )}
-                    </strong>
-
-                    <div class="muted">
-
-                      Parent lié •
-
-                      ${
-                        link.status ===
-                        "approved"
-
-                          ? "🟢 confirmé"
-
-                          : "🟠 en attente"
-
-                      }
-
-                    </div>
-
-                  </div>
-
-                  <span class="chip">
-                    Lecture seule
-                  </span>
-
-                </div>
-
-              </div>
-
-            `
-          ).join("")
-
-        : `
-
-          <div class="muted">
-            Aucun parent lié à ton compte.
-          </div>
-
-        `;
-
-
-    document.getElementById(
-      "reportParent"
-    ).innerHTML =
-
-      links.length
-
-        ? links.map(
-            link => `
-
-              <option
-                value="${link.id}">
-
-                ${escapeHtml(
-                  link.parentLogin
-                )}
-
-              </option>
-
-            `
-          ).join("")
-
-        : `
-
-          <option value="">
-            Aucun parent
-          </option>
-
-        `;
-
-  }
-  catch(error){
-
-    showAuthError(
-      firebaseErrorMessage(
-        error,
-        "Chargement famille"
-      )
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   SIGNALER UN PARENT
-   ========================================================= */
-
-async function reportParentIssue(){
-
-  if(
-    !currentProfile ||
-    currentProfile.role !==
-    "eleve"
-  ){
-
-    return;
-
-  }
-
-
-  const linkId =
-    document.getElementById(
-      "reportParent"
-    ).value;
-
-
-  if(!linkId){
-
-    return toast(
-      "Aucun parent sélectionné."
-    );
-
-  }
-
-
-  try{
-
-    await fb.fsMod.addDoc(
-
-      fb.fsMod.collection(
-        fb.db,
-        "reports"
-      ),
-
-      {
-
-        childUid:
-          currentUser.uid,
-
-        linkId,
-
-        reason:
-          document.getElementById(
-            "reportReason"
-          ).value,
-
-        details:
-          document.getElementById(
-            "reportDetails"
-          ).value.trim(),
-
-        status:"open",
-
-        createdAt:
-          fb.fsMod.serverTimestamp()
-
-      }
-
-    );
-
-
-    await fb.fsMod.updateDoc(
-
-      fb.fsMod.doc(
-        fb.db,
-        "parentLinks",
-        linkId
-      ),
-
-      {
-        reported:true
-      }
-
-    );
-
-
-    document.getElementById(
-      "reportDetails"
-    ).value = "";
-
-
-    toast(
-      "Signalement envoyé à l'administrateur."
-    );
-
-
-    loadFamily();
-
-  }
-  catch(error){
-
-    showAuthError(
-      firebaseErrorMessage(
-        error,
-        "Signalement"
-      )
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   INITIALISATION INTERFACE
-   ========================================================= */
-
-renderTop5();
-
-renderCalendar();
-
-renderChannels();
-
-renderBooks();
-
-renderActivities();
-
-renderTeams();
-
-renderQuizzes();
-
-renderShop();
-
-renderRequests();
-
-syncCoins();
-
-
-/* =========================================================
-   INITIALISATION FIREBASE
-   ========================================================= */
+   DEMARRAGE
+========================================================= */
 
 initFirebase();
 
@@ -7020,4 +4398,3 @@ initFirebase();
 
 </body>
 </html>
-```
