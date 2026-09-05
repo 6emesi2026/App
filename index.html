@@ -21,8 +21,67 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
 @media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}.topbar{margin-bottom:14px}.grid,.grid-2,.grid-3{grid-template-columns:1fr}.calendar{grid-template-columns:1fr 1fr}.hero{padding:20px}.hero h1{font-size:23px}}
 </style>
+
+<style id="auth-css">
+#authScreen{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#eef2ff,#f5f7fb);display:grid;place-items:center;padding:20px}
+#authScreen.hidden{display:none}
+.auth-box{width:min(470px,100%);background:#fff;border:1px solid #e5e7eb;border-radius:24px;padding:30px;box-shadow:0 20px 60px rgba(15,23,42,.12)}
+.auth-logo{text-align:center;font-size:42px;margin-bottom:8px}.auth-box h1{text-align:center;margin:0 0 6px}.auth-sub{text-align:center;color:#6b7280;margin:0 0 22px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;background:#f3f4f6;padding:5px;border-radius:12px;margin-bottom:18px}
+.auth-tabs button{padding:10px;border-radius:9px;background:transparent}.auth-tabs button.active{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);font-weight:700}
+.auth-error{display:none;background:#fee2e2;color:#991b1b;padding:10px 12px;border-radius:10px;margin-bottom:12px;font-size:14px}
+.auth-info{display:none;background:#eef2ff;color:#3730a3;padding:10px 12px;border-radius:10px;margin-bottom:12px;font-size:14px}
+.auth-help{font-size:12px;color:#6b7280;line-height:1.5;margin-top:12px}
+.role-card{display:grid;grid-template-columns:1fr 1fr;gap:8px}.role-card label{border:1px solid #d1d5db;border-radius:10px;padding:10px;cursor:pointer}.role-card label:has(input:checked){border-color:#4f46e5;background:#eef2ff}
+.role-card input{margin-right:7px}
+@media(max-width:500px){.auth-box{padding:22px}.role-card{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
+
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-logo">🏫</div>
+    <h1>Ma Classe 6ème</h1>
+    <p class="auth-sub">Espace sécurisé de la vie de classe</p>
+    <div class="auth-tabs">
+      <button id="loginTab" class="active" onclick="switchAuthMode('login')">Se connecter</button>
+      <button id="registerTab" onclick="switchAuthMode('register')">Créer un compte</button>
+    </div>
+    <div id="authError" class="auth-error"></div>
+    <div id="authInfo" class="auth-info"></div>
+
+    <form id="loginForm" class="form" onsubmit="event.preventDefault();loginUser()">
+      <label>Login<input id="loginInput" class="input" autocomplete="username" required placeholder="ex. adam123"></label>
+      <label>Mot de passe<input id="passwordInput" class="input" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary" type="submit">🔐 Se connecter</button>
+    </form>
+
+    <form id="registerForm" class="form hidden" onsubmit="event.preventDefault();registerUser()">
+      <div class="grid-2">
+        <label>Prénom<input id="regFirstName" class="input" required></label>
+        <label>Nom<input id="regLastName" class="input" required></label>
+      </div>
+      <label>Login<input id="regLogin" class="input" required pattern="[A-Za-z0-9._-]{3,30}" placeholder="ex. adam123"></label>
+      <label>Mot de passe<input id="regPassword" class="input" type="password" minlength="6" required></label>
+      <label>Confirmer le mot de passe<input id="regPassword2" class="input" type="password" minlength="6" required></label>
+      <label>Je suis :</label>
+      <div class="role-card">
+        <label><input type="radio" name="regRole" value="eleve" checked onchange="toggleParentFields()"> Élève</label>
+        <label><input type="radio" name="regRole" value="teacher" onchange="toggleParentFields()"> Maître(sse)</label>
+        <label><input type="radio" name="regRole" value="parent" onchange="toggleParentFields()"> Parent</label>
+      </div>
+      <div id="parentFields" class="hidden">
+        <label>Login exact de mon enfant<input id="childLogin" class="input" placeholder="ex. adam123"></label>
+        <div class="auth-help">La liaison sera créée en attente de validation. Votre enfant pourra voir la liaison et signaler un problème.</div>
+      </div>
+      <button class="btn primary" type="submit">Créer mon compte</button>
+    </form>
+    <div class="auth-help">Le mot de passe est géré par Firebase Authentication et n'est jamais enregistré en clair dans Firestore.</div>
+  </div>
+</div>
+
 <div class="app">
 <aside class="sidebar" id="sidebar">
   <div class="brand"><span class="brand-icon">🏫</span> Ma Classe 6ème</div>
@@ -43,7 +102,10 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
   </nav>
   <div class="nav-title">Administration</div>
   <nav class="nav">
-    <button data-page="teacher">👨‍🏫 Espace professeur</button>
+    <button data-page="admin" id="adminNav" class="hidden">👑 Administration</button>
+    <button data-page="teacher" id="teacherNav" class="hidden">👨‍🏫 Espace professeur</button>
+    <button data-page="family" id="familyNav" class="hidden">👨‍👩‍👧 Ma famille</button>
+    <button onclick="logoutUser()">🚪 Se déconnecter</button>
   </nav>
 </aside>
 
@@ -99,6 +161,42 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
 
 <section class="page" id="delegates"><div class="hero"><h1>👥 Espace délégués</h1><p>Chaque élève peut proposer une idée ou faire une demande.</p></div><div class="grid-2"><div class="card"><h3>📩 Mes demandes</h3><div class="list" id="requestList"></div><button class="btn primary" onclick="openRequest()">+ Nouvelle demande</button></div><div class="card"><h3>📊 Sondages</h3><div class="item"><strong>Quel jeu pour la prochaine activité ?</strong><p>🎲 Escape Game — 15</p><p>⚽ Football — 8</p><p>🎮 Quiz Battle — 12</p><button class="btn" onclick="toast('Vote enregistré !')">Voter</button></div></div></div></section>
 
+
+<section class="page" id="admin">
+  <div class="hero"><h1>👑 Administration</h1><p>Valider les comptes, gérer les rôles et contrôler les liaisons parent-enfant.</p></div>
+  <div class="grid">
+    <div class="card stat">👨‍🎓<div class="num" id="adminStudents">0</div><div class="muted">Élèves</div></div>
+    <div class="card stat">👩‍🏫<div class="num" id="adminTeachers">0</div><div class="muted">Maîtres(ses)</div></div>
+    <div class="card stat">👨‍👩‍👧<div class="num" id="adminParents">0</div><div class="muted">Parents</div></div>
+    <div class="card stat">⏳<div class="num" id="adminPending">0</div><div class="muted">En attente</div></div>
+  </div>
+  <div class="section-title"><h2>⏳ Comptes en attente</h2><button class="btn" onclick="loadAdminData()">↻ Actualiser</button></div>
+  <div class="card"><div id="pendingUsers" class="list"><div class="muted">Chargement...</div></div></div>
+  <div class="section-title"><h2>👥 Utilisateurs</h2></div>
+  <div class="card"><div id="allUsers" class="list"><div class="muted">Chargement...</div></div></div>
+  <div class="section-title"><h2>👨‍👩‍👧 Liaisons parent-enfant</h2></div>
+  <div class="card"><div id="parentLinksAdmin" class="list"><div class="muted">Chargement...</div></div></div>
+</section>
+
+<section class="page" id="family">
+  <div class="hero"><h1>👨‍👩‍👧 Ma famille</h1><p>Voir les parents liés à ton compte et signaler un problème.</p></div>
+  <div class="card"><h3>Parents liés</h3><div id="familyList" class="list"><div class="muted">Chargement...</div></div></div>
+  <div class="section-title"><h2>⚠️ Signaler un problème</h2></div>
+  <div class="card">
+    <div class="form">
+      <label>Parent concerné<select id="reportParent" class="input"></select></label>
+      <label>Motif<select id="reportReason" class="input">
+        <option>Je ne connais pas cette personne</option>
+        <option>Cette personne n'est pas mon parent</option>
+        <option>Mauvais compte associé</option>
+        <option>Autre</option>
+      </select></label>
+      <label>Précisions<textarea id="reportDetails" placeholder="Explique le problème..."></textarea></label>
+      <button class="btn danger" onclick="reportParentIssue()">⚠️ Envoyer le signalement</button>
+    </div>
+  </div>
+</section>
+
 <section class="page" id="teacher"><div class="hero"><h1>👨‍🏫 Espace professeur</h1><p>Créer du contenu, gérer les ClassCoins, les équipes et les activités.</p></div><div class="grid-3">
   <div class="card"><div class="iconbox">🪙</div><h3>Attribuer des ClassCoins</h3><p class="muted">À un élève, groupe, équipe ou toute la classe.</p><button class="btn primary" onclick="openCoinsModal()">Attribuer</button></div>
   <div class="card"><div class="iconbox">🎯</div><h3>Créer un challenge</h3><button class="btn primary" onclick="openChallenge()">Créer</button></div>
@@ -122,12 +220,13 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
    4. Les fonctions de démonstration fonctionnent sans Firebase.
 */
 const firebaseConfig = {
-  apiKey: "VOTRE_API_KEY",
-  authDomain: "VOTRE_PROJET.firebaseapp.com",
-  projectId: "VOTRE_PROJET",
-  storageBucket: "VOTRE_PROJET.firebasestorage.app",
-  messagingSenderId: "VOTRE_SENDER_ID",
-  appId: "VOTRE_APP_ID"
+  apiKey: "AIzaSyCR-_BSQ2IbZgPVN6-p7NnoxR0BdJcQh",
+  authDomain: "ma-classe-6eme-2bc24.firebaseapp.com",
+  projectId: "ma-classe-6eme-2bc24",
+  storageBucket: "ma-classe-6eme-2bc24.firebasestorage.app",
+  messagingSenderId: "889834099455",
+  appId: "1:889834099455:web:9a29b59808ad4b988bf2ca",
+  measurementId: "G-QEJR7P5W8b"
 };
 
 /* Données de démonstration */
@@ -156,17 +255,24 @@ let state={
 const navNames={
 home:"Accueil",schedule:"Emploi du temps",discussions:"Discussions",games:"Jouer",
 quizzes:"Quiz",library:"Bibliothèque",activities:"Activités",groups:"Équipes & groupes",
-challenges:"Challenges",coins:"ClassCoins",collab:"Collaboration",delegates:"Délégués",teacher:"Espace professeur"
+challenges:"Challenges",coins:"ClassCoins",collab:"Collaboration",delegates:"Délégués",teacher:"Espace professeur",admin:"Administration",family:"Ma famille"
 };
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 function showPage(id){
+  if(!currentProfile) return;
+  if(id==="admin" && currentProfile.role!=="admin") return toast("Accès réservé à l'administrateur.");
+  if(id==="teacher" && !["admin","teacher"].includes(currentProfile.role)) return toast("Accès réservé aux maîtres(ses).");
+  if(id==="family" && currentProfile.role!=="eleve") return toast("Cette rubrique est réservée aux élèves.");
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  const page=document.getElementById(id); if(!page)return;
+  page.classList.add("active");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-  document.getElementById("pageTitle").textContent=navNames[id];
+  document.getElementById("pageTitle").textContent=navNames[id]||id;
   document.getElementById("sidebar").classList.remove("open");
   if(id==="library")renderBooks();
   if(id==="activities")renderActivities();
+  if(id==="admin")loadAdminData();
+  if(id==="family")loadFamily();
 }
 function toggleSidebar(){document.getElementById("sidebar").classList.toggle("open")}
 function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
@@ -235,22 +341,231 @@ function openContentBuilder(){openModal("📝 Éditeur WYSIWYG",`<div class="for
 renderTop5();renderCalendar();renderChannels();renderBooks();renderActivities();renderTeams();renderQuizzes();renderShop();renderRequests();syncCoins();
 
 /* =====================================================
-   FIREBASE : branchement optionnel
-   Les CDN sont chargés dynamiquement uniquement si
-   une vraie configuration est renseignée.
+   FIREBASE : AUTHENTIFICATION + FIRESTORE
    ===================================================== */
+let fb = null;
+let currentUser = null;
+let currentProfile = null;
+
 async function initFirebase(){
-  if(firebaseConfig.apiKey.startsWith("VOTRE_")) return;
   try{
-    const appMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
-    const authMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
-    const fsMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
-    const app=appMod.initializeApp(firebaseConfig);
-    const auth=authMod.getAuth(app);
-    const db=fsMod.getFirestore(app);
-    window.firebaseApp={app,auth,db,fsMod};
-    console.log("Firebase connecté.");
-  }catch(e){console.error("Firebase:",e);toast("Mode démo : Firebase non connecté.");}
+    const appMod = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+    const authMod = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+    const fsMod = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
+
+    const app = appMod.initializeApp(firebaseConfig);
+    const auth = authMod.getAuth(app);
+    const db = fsMod.getFirestore(app);
+    fb = {app,auth,db,authMod,fsMod};
+    window.firebaseApp = fb;
+
+    authMod.onAuthStateChanged(auth, async (user)=>{
+      if(!user){
+        currentUser=null; currentProfile=null;
+        document.getElementById("authScreen").classList.remove("hidden");
+        return;
+      }
+      currentUser=user;
+      try{
+        const snap=await fsMod.getDoc(fsMod.doc(db,"users",user.uid));
+        if(!snap.exists()){
+          await authMod.signOut(auth);
+          showAuthError("Profil utilisateur introuvable.");
+          return;
+        }
+        currentProfile={uid:user.uid,...snap.data()};
+        if(currentProfile.status!=="approved"){
+          await authMod.signOut(auth);
+          showAuthInfo(currentProfile.status==="pending"
+            ?"Votre compte est en attente de validation par l'administrateur."
+            :"Votre compte n'est pas autorisé à se connecter.");
+          return;
+        }
+        enterApp();
+      }catch(e){
+        console.error(e); showAuthError("Impossible de charger votre profil.");
+      }
+    });
+  }catch(e){
+    console.error("Firebase:",e);
+    showAuthError("Firebase n'est pas correctement configuré.");
+  }
+}
+
+function loginEmail(login){return login.trim().toLowerCase()+"@ma-classe-6eme.app";}
+function showAuthError(msg){const e=document.getElementById("authError");e.textContent=msg;e.style.display="block";document.getElementById("authInfo").style.display="none";}
+function showAuthInfo(msg){const e=document.getElementById("authInfo");e.textContent=msg;e.style.display="block";document.getElementById("authError").style.display="none";}
+function clearAuthMessages(){document.getElementById("authError").style.display="none";document.getElementById("authInfo").style.display="none";}
+
+function switchAuthMode(mode){
+  clearAuthMessages();
+  document.getElementById("loginForm").classList.toggle("hidden",mode!=="login");
+  document.getElementById("registerForm").classList.toggle("hidden",mode!=="register");
+  document.getElementById("loginTab").classList.toggle("active",mode==="login");
+  document.getElementById("registerTab").classList.toggle("active",mode==="register");
+}
+function toggleParentFields(){
+  const role=document.querySelector('input[name="regRole"]:checked')?.value;
+  document.getElementById("parentFields").classList.toggle("hidden",role!=="parent");
+  document.getElementById("childLogin").required=(role==="parent");
+}
+
+async function loginUser(){
+  if(!fb){showAuthError("Firebase n'est pas encore prêt.");return}
+  clearAuthMessages();
+  const login=document.getElementById("loginInput").value.trim().toLowerCase();
+  const password=document.getElementById("passwordInput").value;
+  try{await fb.authMod.signInWithEmailAndPassword(fb.auth,loginEmail(login),password);}
+  catch(e){console.error(e);showAuthError("Login ou mot de passe incorrect.");}
+}
+
+async function registerUser(){
+  if(!fb){showAuthError("Firebase n'est pas encore prêt.");return}
+  clearAuthMessages();
+  const firstName=document.getElementById("regFirstName").value.trim();
+  const lastName=document.getElementById("regLastName").value.trim();
+  const login=document.getElementById("regLogin").value.trim().toLowerCase();
+  const password=document.getElementById("regPassword").value;
+  const password2=document.getElementById("regPassword2").value;
+  const role=document.querySelector('input[name="regRole"]:checked')?.value;
+  const childLogin=document.getElementById("childLogin").value.trim().toLowerCase();
+
+  if(password!==password2){showAuthError("Les deux mots de passe sont différents.");return}
+  if(!/^[a-z0-9._-]{3,30}$/.test(login)){showAuthError("Login invalide.");return}
+
+  try{
+    const fs=fb.fsMod;
+    const existing=await fs.getDocs(fs.query(fs.collection(fb.db,"users"),fs.where("login","==",login)));
+    if(!existing.empty){showAuthError("Ce login est déjà utilisé.");return}
+
+    let child=null;
+    if(role==="parent"){
+      const childSnap=await fs.getDocs(fs.query(fs.collection(fb.db,"users"),fs.where("login","==",childLogin),fs.where("role","==","eleve")));
+      if(childSnap.empty){showAuthError("Aucun compte élève ne correspond à ce login.");return}
+      child={uid:childSnap.docs[0].id,...childSnap.docs[0].data()};
+    }
+
+    const cred=await fb.authMod.createUserWithEmailAndPassword(fb.auth,loginEmail(login),password);
+    const uid=cred.user.uid;
+
+    const settingsRef=fs.doc(fb.db,"system","config");
+    const settingsSnap=await fs.getDoc(settingsRef);
+    const isFirst=!settingsSnap.exists() || settingsSnap.data().initialized!==true;
+
+    if(isFirst){
+      await fs.setDoc(settingsRef,{initialized:true,firstAdminUid:uid,createdAt:fs.serverTimestamp()},{merge:true});
+    }
+
+    await fs.setDoc(fs.doc(fb.db,"users",uid),{
+      login,firstName,lastName,displayName:(firstName+" "+lastName).trim(),
+      role:isFirst?"admin":role,
+      status:isFirst?"approved":"pending",
+      classId:"",
+      createdAt:fs.serverTimestamp(),
+      approvedAt:isFirst?fs.serverTimestamp():null
+    });
+
+    if(role==="parent" && child){
+      await fs.addDoc(fs.collection(fb.db,"parentLinks"),{
+        parentUid:uid,parentLogin:login,childUid:child.uid,childLogin:child.login,
+        status:"pending",reported:false,createdAt:fs.serverTimestamp()
+      });
+    }
+
+    if(isFirst){
+      showAuthInfo("Compte administrateur créé. Connexion en cours...");
+    }else{
+      await fb.authMod.signOut(fb.auth);
+      switchAuthMode("login");
+      showAuthInfo("Compte créé. Il doit maintenant être validé par l'administrateur.");
+    }
+  }catch(e){
+    console.error(e);
+    if(e.code==="auth/email-already-in-use")showAuthError("Ce login est déjà utilisé.");
+    else if(e.code==="auth/weak-password")showAuthError("Le mot de passe doit contenir au moins 6 caractères.");
+    else showAuthError("Erreur lors de la création du compte.");
+  }
+}
+
+function enterApp(){
+  document.getElementById("authScreen").classList.add("hidden");
+  const fullName=currentProfile.displayName||currentProfile.login;
+  document.getElementById("userName").textContent=fullName;
+  document.getElementById("roleLabel").textContent=(currentProfile.classId?currentProfile.classId+" • ":"")+roleLabel(currentProfile.role);
+  document.querySelector(".avatar").textContent=(fullName[0]||"?").toUpperCase();
+
+  document.getElementById("adminNav").classList.toggle("hidden",currentProfile.role!=="admin");
+  document.getElementById("teacherNav").classList.toggle("hidden",!["admin","teacher"].includes(currentProfile.role));
+  document.getElementById("familyNav").classList.toggle("hidden",currentProfile.role!=="eleve");
+
+  showPage("home");
+  if(currentProfile.role==="admin")loadAdminData();
+  if(currentProfile.role==="eleve")loadFamily();
+}
+function roleLabel(role){return({admin:"Administrateur",teacher:"Maître(sse)",eleve:"Élève",parent:"Parent d'élève"})[role]||role;}
+async function logoutUser(){if(fb)await fb.authMod.signOut(fb.auth);switchAuthMode("login");}
+
+async function loadAdminData(){
+  if(!currentProfile||currentProfile.role!=="admin")return;
+  const fs=fb.fsMod;
+  const snap=await fs.getDocs(fs.collection(fb.db,"users"));
+  const users=snap.docs.map(d=>({uid:d.id,...d.data()}));
+  const counts={eleve:0,teacher:0,parent:0};
+  users.forEach(u=>{if(counts[u.role]!=null)counts[u.role]++;});
+  document.getElementById("adminStudents").textContent=counts.eleve;
+  document.getElementById("adminTeachers").textContent=counts.teacher;
+  document.getElementById("adminParents").textContent=counts.parent;
+  document.getElementById("adminPending").textContent=users.filter(u=>u.status==="pending").length;
+
+  const pending=users.filter(u=>u.status==="pending");
+  document.getElementById("pendingUsers").innerHTML=pending.length
+    ?pending.map(u=>`<div class="item"><div class="row"><div><strong>${escapeHtml(u.displayName||u.login)}</strong><div class="muted">${escapeHtml(u.login)} • ${roleLabel(u.role)}</div></div><div><button class="btn success small" onclick="approveUser('${u.uid}')">✓ Valider</button> <button class="btn danger small" onclick="rejectUser('${u.uid}')">✕ Refuser</button></div></div></div>`).join("")
+    :'<div class="muted">Aucune demande en attente.</div>';
+
+  document.getElementById("allUsers").innerHTML=users.map(u=>`
+    <div class="item"><div class="row">
+      <div><strong>${escapeHtml(u.displayName||u.login)}</strong><div class="muted">${escapeHtml(u.login)} • ${roleLabel(u.role)} • ${u.status}</div></div>
+      <select class="input" style="width:auto" onchange="changeUserRole('${u.uid}',this.value)" ${u.uid===currentUser.uid?'disabled':''}>
+        ${["eleve","teacher","parent","admin"].map(r=>`<option value="${r}" ${r===u.role?"selected":""}>${roleLabel(r)}</option>`).join("")}
+      </select>
+    </div></div>`).join("");
+
+  const links=await fs.getDocs(fs.collection(fb.db,"parentLinks"));
+  document.getElementById("parentLinksAdmin").innerHTML=links.empty
+    ?'<div class="muted">Aucune liaison.</div>'
+    :links.docs.map(d=>{const l=d.data();return `<div class="item"><div class="row"><div>👨‍👩‍👧 <strong>${escapeHtml(l.parentLogin||"parent")}</strong> → ${escapeHtml(l.childLogin||"enfant")}<div class="muted">Statut : ${l.status}</div></div><span class="chip">${l.reported?"⚠️ signalé":"OK"}</span></div></div>`;}).join("");
+}
+async function approveUser(uid){if(currentProfile.role!=="admin")return;await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"users",uid),{status:"approved",approvedAt:fb.fsMod.serverTimestamp()});toast("Compte validé.");loadAdminData();}
+async function rejectUser(uid){if(currentProfile.role!=="admin")return;await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"users",uid),{status:"rejected"});toast("Compte refusé.");loadAdminData();}
+async function changeUserRole(uid,role){if(currentProfile.role!=="admin")return;await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"users",uid),{role});toast("Rôle modifié.");loadAdminData();}
+
+async function loadFamily(){
+  if(!currentProfile||currentProfile.role!=="eleve")return;
+  const fs=fb.fsMod;
+  const q=fs.query(fs.collection(fb.db,"parentLinks"),fs.where("childUid","==",currentUser.uid));
+  const snap=await fs.getDocs(q);
+  const links=snap.docs.map(d=>({id:d.id,...d.data()}));
+  document.getElementById("familyList").innerHTML=links.length
+    ?links.map(l=>`<div class="item"><div class="row"><div><strong>👨‍👩‍👧 ${escapeHtml(l.parentLogin)}</strong><div class="muted">Parent lié • ${l.status==="approved"?"🟢 confirmé":"🟠 en attente"}</div></div><span class="chip">Lecture seule</span></div></div>`).join("")
+    :'<div class="muted">Aucun parent lié à ton compte.</div>';
+  document.getElementById("reportParent").innerHTML=links.length
+    ?links.map(l=>`<option value="${l.id}">${escapeHtml(l.parentLogin)}</option>`).join("")
+    :'<option value="">Aucun parent</option>';
+}
+async function reportParentIssue(){
+  if(!currentProfile||currentProfile.role!=="eleve")return;
+  const linkId=document.getElementById("reportParent").value;
+  if(!linkId){toast("Aucun parent sélectionné.");return}
+  await fb.fsMod.addDoc(fb.fsMod.collection(fb.db,"reports"),{
+    childUid:currentUser.uid,linkId,
+    reason:document.getElementById("reportReason").value,
+    details:document.getElementById("reportDetails").value.trim(),
+    status:"open",createdAt:fb.fsMod.serverTimestamp()
+  });
+  await fb.fsMod.updateDoc(fb.fsMod.doc(fb.db,"parentLinks",linkId),{reported:true});
+  document.getElementById("reportDetails").value="";
+  toast("Signalement envoyé à l'administrateur.");
+  loadFamily();
 }
 initFirebase();
 </script>
